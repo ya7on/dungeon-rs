@@ -104,8 +104,8 @@ fn main() {
             "s" => state.apply_player_action(PlayerAction::Skip),
             "mn" => state.apply_player_action(PlayerAction::Move(Direction::North)),
             "ms" => state.apply_player_action(PlayerAction::Move(Direction::South)),
-            "me" => state.apply_player_action(PlayerAction::Move(Direction::West)),
-            "mw" => state.apply_player_action(PlayerAction::Move(Direction::East)),
+            "me" => state.apply_player_action(PlayerAction::Move(Direction::East)),
+            "mw" => state.apply_player_action(PlayerAction::Move(Direction::West)),
             "q" => break,
             _ => println!("Unknown command"),
         }
