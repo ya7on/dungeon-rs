@@ -3,7 +3,7 @@ use crate::position::Position;
 use super::{tile::Tile, tiles::Tiles};
 
 #[derive(Debug)]
-pub(crate) struct DungeonMap {
+pub struct DungeonMap {
     tiles: Tiles,
 }
 
@@ -28,7 +28,8 @@ impl DungeonMap {
         Self { tiles }
     }
 
-    pub fn get_tile(&self, position: Position) -> &Tile {
+    /// Returns a reference to the tile at the given position.
+    pub fn get_tile(&self, position: &Position) -> &Tile {
         self.tiles.get_tile(position)
     }
 }

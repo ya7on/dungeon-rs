@@ -31,7 +31,7 @@ impl EntityId {
 
 /// Represents an actor in the game. e.g. Player, Enemy.
 #[derive(Debug)]
-pub(crate) struct Actor {
+pub struct Actor {
     /// The unique identifier of the actor.
     pub(crate) id: EntityId,
     /// The position of the actor.
@@ -56,5 +56,9 @@ impl Actor {
     /// Creates a new player actor with the given position.
     pub(crate) fn create_player(position: Position) -> Self {
         Actor::create(position, ActorKind::Player)
+    }
+
+    pub fn position(&self) -> &Position {
+        &self.position
     }
 }

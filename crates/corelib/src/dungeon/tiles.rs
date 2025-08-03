@@ -4,7 +4,7 @@ use super::tile::Tile;
 
 /// Heap allocated array of Tile.
 #[derive(Debug)]
-pub(crate) struct Tiles {
+pub struct Tiles {
     width: usize,
     height: usize,
     inner: Box<[Tile]>,
@@ -32,7 +32,7 @@ impl Tiles {
     }
 
     /// Returns the index of the tile at the given coordinates.
-    fn position_to_index(&self, position: Position) -> Option<usize> {
+    fn position_to_index(&self, position: &Position) -> Option<usize> {
         if !self.in_bounds(position) {
             return None;
         }
@@ -47,7 +47,7 @@ impl Tiles {
     }
 
     /// Checks if the given position is within the bounds of the dungeon map.
-    pub(crate) fn in_bounds(&self, position: Position) -> bool {
+    pub(crate) fn in_bounds(&self, position: &Position) -> bool {
         let x = position.x() + self.half_width();
         let y = position.y() + self.half_height();
 
@@ -55,7 +55,7 @@ impl Tiles {
     }
 
     /// Gets the tile at the given coordinates.
-    pub(crate) fn get_tile(&self, position: Position) -> &Tile {
+    pub(crate) fn get_tile(&self, position: &Position) -> &Tile {
         let Some(index) = self.position_to_index(position) else {
             return &Tile::Empty;
         };
@@ -65,7 +65,7 @@ impl Tiles {
 
     /// Sets the tile at the given coordinates.
     pub(crate) fn set_tile(&mut self, position: Position, tile: Tile) {
-        let Some(index) = self.position_to_index(position) else {
+        let Some(index) = self.position_to_index(&position) else {
             return;
         };
 

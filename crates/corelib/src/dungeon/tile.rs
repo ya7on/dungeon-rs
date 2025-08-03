@@ -1,6 +1,6 @@
 #[derive(Debug, Clone)]
 #[repr(u8)]
-pub(crate) enum Tile {
+pub enum Tile {
     Empty = 0,
     Floor = 1,
 }

@@ -5,10 +5,29 @@ mod actor;
 mod actor_kind;
 mod actor_stats;
 mod direction;
+mod dungeon;
 mod game_state;
-mod map;
 mod position;
 
 pub use actions::PlayerAction;
+pub use actor::Actor;
 pub use direction::Direction;
+pub use dungeon::{DungeonMap, Tile, Tiles};
 pub use game_state::GameState;
+pub use position::Position;
+
+/// Creates a new game instance.
+pub fn new_game() -> GameState {
+    const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
+    const DEFAULT_MAP_WIDTH: usize = 10;
+    const DEFAULT_MAP_HEIGHT: usize = 10;
+
+    let map = dungeon::DungeonMap::generate(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT, DEFAULT_SEED);
+
+    GameState::new(
+        actor::Actor::create_player(position::Position { x: 0, y: 0 }),
+        vec![],
+        map,
+        DEFAULT_SEED,
+    )
+}

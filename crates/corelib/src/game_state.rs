@@ -1,7 +1,7 @@
 use crate::{
     actions::{PlayerAction, try_attack, try_move},
     actor::Actor,
-    map::DungeonMap,
+    dungeon::DungeonMap,
 };
 
 /// Represents the state of the game.
@@ -14,24 +14,20 @@ pub struct GameState {
     /// Other entities in the game.
     pub(crate) entities: Vec<Actor>,
     /// The dungeon map.
-    pub(crate) map: DungeonMap,
+    pub(crate) dungeon: DungeonMap,
     /// The seed for random number generation.
     pub(crate) seed: u64,
 }
 
 impl GameState {
     /// Creates a new game state with the given player and entities.
-    pub(crate) fn new(player: Actor, entities: Vec<Actor>) -> Self {
-        const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
-        const DEFAULT_MAP_WIDTH: usize = 10;
-        const DEFAULT_MAP_HEIGHT: usize = 10;
-
+    pub(crate) fn new(player: Actor, entities: Vec<Actor>, map: DungeonMap, seed: u64) -> Self {
         GameState {
             tick_id: 0,
             player,
             entities,
-            map: DungeonMap::generate(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT, DEFAULT_SEED),
-            seed: DEFAULT_SEED,
+            dungeon: map,
+            seed,
         }
     }
 
@@ -51,8 +47,12 @@ impl GameState {
     }
 
     /// Returns a reference to the player.
-    pub(crate) fn player(&self) -> &Actor {
+    pub fn player(&self) -> &Actor {
         &self.player
+    }
+
+    pub fn dungeon(&self) -> &DungeonMap {
+        &self.dungeon
     }
 
     /// Removes an entity from the game state by its vector index.
@@ -70,7 +70,12 @@ mod tests {
 
     #[test]
     fn test_tick_increment() {
-        let mut gs = GameState::new(Actor::create_player(Position::new(0, 0)), vec![]);
+        let mut gs = GameState::new(
+            Actor::create_player(Position::new(0, 0)),
+            vec![],
+            DungeonMap::generate(10, 10, 0),
+            42,
+        );
 
         gs.apply_player_action(PlayerAction::Skip);
 
