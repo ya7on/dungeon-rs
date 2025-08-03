@@ -1,4 +1,4 @@
-use crate::{Direction, GameState};
+use crate::{GameState, direction::Direction};
 
 /// Moves the player in the specified direction.
 pub(crate) fn try_move(state: &mut GameState, direction: Direction) {
@@ -8,7 +8,9 @@ pub(crate) fn try_move(state: &mut GameState, direction: Direction) {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Actor, Direction, GameState, PlayerAction, Position};
+    use crate::{
+        GameState, actions::PlayerAction, actor::Actor, direction::Direction, position::Position,
+    };
 
     #[test]
     fn test_player_movement() {

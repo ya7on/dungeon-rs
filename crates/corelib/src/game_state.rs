@@ -1,6 +1,7 @@
 use crate::{
-    Actor, PlayerAction,
-    actions::{try_attack, try_move},
+    actions::{PlayerAction, try_attack, try_move},
+    actor::Actor,
+    map::DungeonMap,
 };
 
 /// Represents the state of the game.
@@ -12,15 +13,18 @@ pub struct GameState {
     pub(crate) player: Actor,
     /// Other entities in the game.
     pub(crate) entities: Vec<Actor>,
+    /// The dungeon map.
+    pub(crate) map: DungeonMap,
 }
 
 impl GameState {
     /// Creates a new game state with the given player and entities.
-    pub fn new(player: Actor, entities: Vec<Actor>) -> Self {
+    pub(crate) fn new(player: Actor, entities: Vec<Actor>) -> Self {
         GameState {
             tick_id: 0,
             player,
             entities,
+            map: DungeonMap::default(),
         }
     }
 
@@ -40,19 +44,20 @@ impl GameState {
     }
 
     /// Returns a reference to the player.
-    pub fn player(&self) -> &Actor {
+    pub(crate) fn player(&self) -> &Actor {
         &self.player
     }
 
     /// Removes an entity from the game state by its vector index.
-    pub fn remove_entity_by_index(&mut self, index: usize) {
+    pub(crate) fn remove_entity_by_index(&mut self, index: usize) {
         self.entities.swap_remove(index);
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::Position;
+
+    use crate::position::Position;
 
     use super::*;
 

@@ -1,7 +1,7 @@
-use crate::{ActorKind, Direction, GameState};
+use crate::{GameState, actor_kind::ActorKind, direction::Direction};
 
 /// Attacks the enemy in the specified direction.
-pub fn try_attack(state: &mut GameState, dir: Direction) {
+pub(crate) fn try_attack(state: &mut GameState, dir: Direction) {
     let (target_pos, player_attack) = {
         let attack_pos = dir.to_offset_position();
         let player = state.player();
@@ -28,7 +28,8 @@ pub fn try_attack(state: &mut GameState, dir: Direction) {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Actor, Position};
+
+    use crate::{actor::Actor, position::Position};
 
     use super::*;
 

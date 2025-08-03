@@ -2,7 +2,7 @@ use std::ops::Add;
 
 /// Represents a position in the game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Position {
+pub(crate) struct Position {
     /// The x-coordinate of the position.
     pub(crate) x: i32,
     /// The y-coordinate of the position.
@@ -11,7 +11,7 @@ pub struct Position {
 
 impl Position {
     /// Creates a new position with the given coordinates.
-    pub fn new(x: i32, y: i32) -> Self {
+    pub(crate) fn new(x: i32, y: i32) -> Self {
         Position { x, y }
     }
 }
