@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Sub};
 
 /// Represents a position in the game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -33,6 +33,17 @@ impl Add<Position> for Position {
         Position {
             x: self.x + other.x,
             y: self.y + other.y,
+        }
+    }
+}
+
+impl Sub<Position> for Position {
+    type Output = Position;
+
+    fn sub(self, other: Position) -> Position {
+        Position {
+            x: self.x - other.x,
+            y: self.y - other.y,
         }
     }
 }

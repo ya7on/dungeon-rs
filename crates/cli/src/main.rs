@@ -11,6 +11,7 @@ enum Color {
     Black,
     White,
     Green,
+    Red,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -18,6 +19,7 @@ enum Symbol {
     Empty,
     Floor,
     Player,
+    Enemy,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -32,12 +34,14 @@ impl Display for RenderItem {
             Symbol::Empty => '.',
             Symbol::Floor => '_',
             Symbol::Player => '@',
+            Symbol::Enemy => 'E',
         }
         .to_string();
         let colored_sym = match self.color {
             Color::Black => sym.black(),
             Color::White => sym.white(),
             Color::Green => sym.green(),
+            Color::Red => sym.red(),
         };
         write!(f, "{}", colored_sym)
     }
@@ -50,6 +54,7 @@ fn render(state: &GameState) {
     }; 9]; 9];
 
     let player = state.player();
+    println!("HP: {}", player.stats().hp());
 
     for row in -4..5 {
         for col in -4..5 {
@@ -73,6 +78,23 @@ fn render(state: &GameState) {
                     };
                 }
             }
+        }
+    }
+
+    for entity in state.entities() {
+        let position = entity.position();
+        let relative_position = position.clone() - player.position().clone();
+
+        if relative_position.x <= 4
+            && relative_position.y <= 4
+            && relative_position.x >= -4
+            && relative_position.y >= -4
+        {
+            field[(relative_position.y + 4) as usize][(relative_position.x + 4) as usize] =
+                RenderItem {
+                    color: Color::Red,
+                    symbol: Symbol::Enemy,
+                };
         }
     }
 
@@ -106,6 +128,10 @@ fn main() {
             "ms" => state.apply_player_action(PlayerAction::Move(Direction::South)),
             "me" => state.apply_player_action(PlayerAction::Move(Direction::East)),
             "mw" => state.apply_player_action(PlayerAction::Move(Direction::West)),
+            "an" => state.apply_player_action(PlayerAction::Attack(Direction::North)),
+            "as" => state.apply_player_action(PlayerAction::Attack(Direction::South)),
+            "ae" => state.apply_player_action(PlayerAction::Attack(Direction::East)),
+            "aw" => state.apply_player_action(PlayerAction::Attack(Direction::West)),
             "q" => break,
             _ => println!("Unknown command"),
         }

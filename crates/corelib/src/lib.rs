@@ -4,6 +4,7 @@ mod actions;
 mod actor;
 mod actor_kind;
 mod actor_stats;
+mod ai;
 mod direction;
 mod dungeon;
 mod game_state;
@@ -11,6 +12,7 @@ mod position;
 
 pub use actions::PlayerAction;
 pub use actor::Actor;
+pub use actor_stats::Stats;
 pub use direction::Direction;
 pub use dungeon::{DungeonMap, Tile, Tiles};
 pub use game_state::GameState;
@@ -26,7 +28,10 @@ pub fn new_game() -> GameState {
 
     GameState::new(
         actor::Actor::create_player(position::Position { x: 0, y: 0 }),
-        vec![],
+        vec![Actor::create(
+            Position { x: 4, y: 4 },
+            actor_kind::ActorKind::Enemy,
+        )],
         map,
         DEFAULT_SEED,
     )

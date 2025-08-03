@@ -2,7 +2,7 @@ use crate::actor_kind::ActorKind;
 
 /// Represents the stats of an actor.
 #[derive(Debug)]
-pub(crate) struct Stats {
+pub struct Stats {
     /// The current health of the actor.
     pub(crate) hp: u32,
     /// Attack power of the actor.
@@ -19,6 +19,11 @@ impl Stats {
             attack,
             defense,
         }
+    }
+
+    /// Returns the current health of the actor.
+    pub fn hp(&self) -> u32 {
+        self.hp
     }
 }
 

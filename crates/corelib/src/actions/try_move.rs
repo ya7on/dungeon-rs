@@ -10,6 +10,15 @@ pub(crate) fn try_move(state: &mut GameState, direction: Direction) {
         return;
     }
 
+    if state
+        .entities
+        .iter()
+        .any(|entity| entity.position == new_position)
+    {
+        // TODO: Implement collision detection and boundary checks
+        return;
+    }
+
     // TODO: Implement movement logic with collision detection and boundary checks
     state.player.position = new_position;
 }

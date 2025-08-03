@@ -58,7 +58,13 @@ impl Actor {
         Actor::create(position, ActorKind::Player)
     }
 
+    /// Returns the position of the actor.
     pub fn position(&self) -> &Position {
         &self.position
+    }
+
+    /// Returns the stats of the actor.
+    pub fn stats(&self) -> &Stats {
+        &self.stats
     }
 }

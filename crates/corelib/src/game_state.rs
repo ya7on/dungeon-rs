@@ -1,6 +1,7 @@
 use crate::{
     actions::{PlayerAction, try_attack, try_move},
     actor::Actor,
+    ai::simple_ai,
     dungeon::DungeonMap,
 };
 
@@ -43,6 +44,8 @@ impl GameState {
             }
         }
 
+        simple_ai(self);
+
         self.tick_id += 1;
     }
 
@@ -51,6 +54,12 @@ impl GameState {
         &self.player
     }
 
+    /// Returns a reference to the entities.
+    pub fn entities(&self) -> &[Actor] {
+        &self.entities
+    }
+
+    /// Returns a reference to the dungeon.
     pub fn dungeon(&self) -> &DungeonMap {
         &self.dungeon
     }
