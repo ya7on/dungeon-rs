@@ -1,26 +1,34 @@
-use super::tile::{Tile, Tiles};
+use crate::position::Position;
+
+use super::{tile::Tile, tiles::Tiles};
 
 #[derive(Debug)]
 pub(crate) struct DungeonMap {
     tiles: Tiles,
 }
 
-// TODO: maybe temporary?
-impl Default for DungeonMap {
-    fn default() -> Self {
-        const DEFAULT_WIDTH: usize = 10;
-        const DEFAULT_HEIGHT: usize = 10;
-
-        Self {
-            tiles: vec![Tile::Empty; DEFAULT_WIDTH * DEFAULT_HEIGHT].into_boxed_slice(),
-        }
-    }
-}
-
 impl DungeonMap {
-    pub(crate) fn new(width: usize, height: usize) -> Self {
-        Self {
-            tiles: vec![Tile::Empty; width * height].into_boxed_slice(),
+    /// Generates a new dungeon map with the given width and height.
+    ///
+    /// Temporary generates a simple dungeon map with floor tiles.
+    pub(crate) fn generate(width: usize, height: usize, _seed: u64) -> Self {
+        let mut tiles = Tiles::empty(width, height);
+        // TODO: Implement proper dungeon generation algorithm.
+        for x in 0..width {
+            for y in 0..height {
+                tiles.set_tile(
+                    Position {
+                        x: x as i32,
+                        y: y as i32,
+                    },
+                    Tile::Floor,
+                );
+            }
         }
+        Self { tiles }
+    }
+
+    pub fn get_tile(&self, position: Position) -> &Tile {
+        self.tiles.get_tile(position)
     }
 }

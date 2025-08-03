@@ -15,16 +15,23 @@ pub struct GameState {
     pub(crate) entities: Vec<Actor>,
     /// The dungeon map.
     pub(crate) map: DungeonMap,
+    /// The seed for random number generation.
+    pub(crate) seed: u64,
 }
 
 impl GameState {
     /// Creates a new game state with the given player and entities.
     pub(crate) fn new(player: Actor, entities: Vec<Actor>) -> Self {
+        const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
+        const DEFAULT_MAP_WIDTH: usize = 10;
+        const DEFAULT_MAP_HEIGHT: usize = 10;
+
         GameState {
             tick_id: 0,
             player,
             entities,
-            map: DungeonMap::default(),
+            map: DungeonMap::generate(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT, DEFAULT_SEED),
+            seed: DEFAULT_SEED,
         }
     }
 

@@ -14,6 +14,16 @@ impl Position {
     pub(crate) fn new(x: i32, y: i32) -> Self {
         Position { x, y }
     }
+
+    /// Returns the x-coordinate of the position.
+    pub(crate) fn x(&self) -> i32 {
+        self.x
+    }
+
+    /// Returns the y-coordinate of the position.
+    pub(crate) fn y(&self) -> i32 {
+        self.y
+    }
 }
 
 impl Add<Position> for Position {
