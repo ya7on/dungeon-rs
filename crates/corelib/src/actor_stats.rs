@@ -25,6 +25,16 @@ impl Stats {
     pub fn hp(&self) -> u32 {
         self.hp
     }
+
+    /// Returns the attach power of the actor
+    pub fn attack(&self) -> u32 {
+        self.attack
+    }
+
+    /// Returns the defense power of the actor.
+    pub fn defense(&self) -> u32 {
+        self.defense
+    }
 }
 
 impl ActorKind {
