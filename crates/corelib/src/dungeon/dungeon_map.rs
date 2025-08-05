@@ -16,24 +16,12 @@ impl DungeonMap {
         // TODO: Implement proper dungeon generation algorithm.
         for x in -10..10 {
             for y in -10..10 {
-                tiles.set(
-                    Position {
-                        x: x as i32,
-                        y: y as i32,
-                    },
-                    Tile::Floor,
-                );
+                tiles.set(Position { x, y }, Tile::Floor);
             }
         }
         for x in 8..20 {
             for y in 8..20 {
-                tiles.set(
-                    Position {
-                        x: x as i32,
-                        y: y as i32,
-                    },
-                    Tile::Floor,
-                );
+                tiles.set(Position { x, y }, Tile::Floor);
             }
         }
         Self { tiles }
