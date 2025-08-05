@@ -14,8 +14,19 @@ impl DungeonMap {
     pub(crate) fn generate(width: usize, height: usize, _seed: u64) -> Self {
         let mut tiles = Array2D::empty(width, height);
         // TODO: Implement proper dungeon generation algorithm.
-        for x in 0..width {
-            for y in 0..height {
+        for x in -10..10 {
+            for y in -10..10 {
+                tiles.set(
+                    Position {
+                        x: x as i32,
+                        y: y as i32,
+                    },
+                    Tile::Floor,
+                );
+            }
+        }
+        for x in 8..20 {
+            for y in 8..20 {
                 tiles.set(
                     Position {
                         x: x as i32,
