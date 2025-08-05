@@ -38,7 +38,7 @@ impl Widget for ViewportWidget<'_> {
                 let dy = y as i32 - (height / 2) as i32;
 
                 let pos = Position::new(player_x + dx, player_y + dy);
-                let tile = dungeon.get_tile(&pos);
+                let tile = dungeon.get_tile(pos);
 
                 let (mut symbol, mut color) = match tile {
                     Tile::Floor => ("_", Color::White),
@@ -46,11 +46,11 @@ impl Widget for ViewportWidget<'_> {
                 };
 
                 // TODO: Fix it
-                if self.state.entities().iter().any(|e| e.position() == &pos) {
+                if self.state.entities().iter().any(|e| e.position() == pos) {
                     symbol = "E";
                     color = Color::Red;
                 };
-                if &pos == player_pos {
+                if pos == player_pos {
                     symbol = "@";
                     color = Color::Yellow;
                 }

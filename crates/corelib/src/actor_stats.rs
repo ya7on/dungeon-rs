@@ -22,16 +22,19 @@ impl Stats {
     }
 
     /// Returns the current health of the actor.
+    #[must_use]
     pub fn hp(&self) -> u32 {
         self.hp
     }
 
     /// Returns the attach power of the actor
+    #[must_use]
     pub fn attack(&self) -> u32 {
         self.attack
     }
 
     /// Returns the defense power of the actor.
+    #[must_use]
     pub fn defense(&self) -> u32 {
         self.defense
     }

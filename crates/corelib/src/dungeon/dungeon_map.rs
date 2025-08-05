@@ -2,6 +2,7 @@ use crate::{Array2D, array2d::Array2DIterator, position::Position};
 
 use super::tile::Tile;
 
+/// Represents a dungeon map.
 #[derive(Debug)]
 pub struct DungeonMap {
     tiles: Array2D<Tile>,
@@ -28,21 +29,34 @@ impl DungeonMap {
     }
 
     /// Returns the width of the dungeon map.
+    #[must_use]
     pub fn width(&self) -> usize {
         self.tiles.width()
     }
 
     /// Returns the height of the dungeon map.
+    #[must_use]
     pub fn height(&self) -> usize {
         self.tiles.height()
     }
 
     /// Returns a reference to the tile at the given position.
-    pub fn get_tile(&self, position: &Position) -> &Tile {
+    #[must_use]
+    pub fn get_tile(&self, position: Position) -> &Tile {
         self.tiles.get(position).unwrap_or(&Tile::Empty)
     }
 
-    pub fn iter(&self) -> Array2DIterator<Tile> {
+    /// Returns an iterator over the tiles in the dungeon map.
+    pub fn iter(&self) -> impl Iterator<Item = (Position, &Tile)> {
+        <&Self as IntoIterator>::into_iter(self)
+    }
+}
+
+impl<'a> IntoIterator for &'a DungeonMap {
+    type Item = (Position, &'a Tile);
+    type IntoIter = Array2DIterator<'a, Tile>;
+
+    fn into_iter(self) -> Self::IntoIter {
         Array2DIterator::new(&self.tiles)
     }
 }

@@ -40,7 +40,7 @@ where
             x: self.x,
             y: self.y,
         };
-        let item = self.inner.get(&position);
+        let item = self.inner.get(position);
 
         self.x += 1;
 

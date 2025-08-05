@@ -37,10 +37,10 @@ impl GameState {
         match action {
             PlayerAction::Skip => {}
             PlayerAction::Move(direction) => {
-                try_move(self, direction);
+                try_move(self, &direction);
             }
             PlayerAction::Attack(direction) => {
-                try_attack(self, direction);
+                try_attack(self, &direction);
             }
         }
 
@@ -50,16 +50,19 @@ impl GameState {
     }
 
     /// Returns a reference to the player.
+    #[must_use]
     pub fn player(&self) -> &Actor {
         &self.player
     }
 
     /// Returns a reference to the entities.
+    #[must_use]
     pub fn entities(&self) -> &[Actor] {
         &self.entities
     }
 
     /// Returns a reference to the dungeon.
+    #[must_use]
     pub fn dungeon(&self) -> &DungeonMap {
         &self.dungeon
     }

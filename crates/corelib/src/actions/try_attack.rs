@@ -1,7 +1,7 @@
 use crate::{GameState, actor_kind::ActorKind, direction::Direction};
 
 /// Attacks the enemy in the specified direction.
-pub(crate) fn try_attack(state: &mut GameState, dir: Direction) {
+pub(crate) fn try_attack(state: &mut GameState, dir: &Direction) {
     let (target_pos, player_attack) = {
         let attack_pos = dir.to_offset_position();
         let player = state.player();
@@ -46,7 +46,7 @@ mod tests {
             DungeonMap::generate(10, 10, 0),
             0,
         );
-        try_attack(&mut gs, Direction::North);
+        try_attack(&mut gs, &Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));
         assert_eq!(gs.entities[1].stats.hp, 20);
@@ -70,11 +70,11 @@ mod tests {
             DungeonMap::generate(10, 10, 0),
             0,
         );
-        try_attack(&mut gs, Direction::North);
-        try_attack(&mut gs, Direction::North);
-        try_attack(&mut gs, Direction::North);
-        try_attack(&mut gs, Direction::North);
-        try_attack(&mut gs, Direction::North);
+        try_attack(&mut gs, &Direction::North);
+        try_attack(&mut gs, &Direction::North);
+        try_attack(&mut gs, &Direction::North);
+        try_attack(&mut gs, &Direction::North);
+        try_attack(&mut gs, &Direction::North);
         assert_eq!(gs.entities.len(), 3);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));

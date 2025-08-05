@@ -1,8 +1,11 @@
+/// Represents a tile in the dungeon.
 #[derive(Debug, Clone, Default)]
 #[repr(u8)]
 pub enum Tile {
     #[default]
+    /// No tile.
     Empty = 0,
+    /// A tile that can be walked on.
     Floor = 1,
 }
 

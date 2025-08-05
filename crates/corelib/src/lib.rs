@@ -1,3 +1,7 @@
+#![warn(clippy::all)]
+#![warn(clippy::pedantic)]
+#![warn(missing_docs)]
+
 //! This module contains the core game logic and data structures.
 
 mod actions;
@@ -21,6 +25,7 @@ pub use game_state::GameState;
 pub use position::Position;
 
 /// Creates a new game instance.
+#[must_use]
 pub fn new_game() -> GameState {
     const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
     const DEFAULT_MAP_WIDTH: usize = 100;

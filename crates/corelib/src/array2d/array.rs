@@ -27,18 +27,21 @@ where
         }
     }
 
-    /// Returns the half width of Array2D.
+    /// Returns the half width of `Array2D`.
+    #[must_use]
     pub fn half_width(&self) -> i32 {
-        (self.width / 2) as i32
+        i32::try_from(self.width / 2).unwrap_or(i32::MAX)
     }
 
-    /// Returns the half height of Array2D.
+    /// Returns the half height of `Array2D`.
+    #[must_use]
     pub fn half_height(&self) -> i32 {
-        (self.height / 2) as i32
+        i32::try_from(self.height / 2).unwrap_or(i32::MAX)
     }
 
     /// Returns the index of the tile at the given coordinates.
-    fn position_to_index(&self, position: &Position) -> Option<usize> {
+    #[must_use]
+    fn position_to_index(&self, position: Position) -> Option<usize> {
         if !self.in_bounds(position) {
             return None;
         }
@@ -46,22 +49,27 @@ where
         let x = position.x() + self.half_width();
         let y = position.y() + self.half_height();
 
-        let x = x as usize;
-        let y = y as usize;
+        let x = usize::try_from(x).unwrap_or_default();
+        let y = usize::try_from(y).unwrap_or_default();
 
         Some(x + y * self.width)
     }
 
-    /// Checks if the given position is within the bounds of the Array2D.
-    pub(crate) fn in_bounds(&self, position: &Position) -> bool {
+    /// Checks if the given position is within the bounds of the `Array2D`.
+    #[must_use]
+    pub(crate) fn in_bounds(&self, position: Position) -> bool {
         let x = position.x() + self.half_width();
         let y = position.y() + self.half_height();
 
-        x >= 0 && y >= 0 && x < self.width as i32 && y < self.height as i32
+        let width = i32::try_from(self.width).unwrap_or(i32::MAX);
+        let height = i32::try_from(self.height).unwrap_or(i32::MAX);
+
+        x >= 0 && y >= 0 && x < width && y < height
     }
 
     /// Gets the tile at the given coordinates.
-    pub(crate) fn get(&self, position: &Position) -> Option<&T> {
+    #[must_use]
+    pub(crate) fn get(&self, position: Position) -> Option<&T> {
         let index = self.position_to_index(position)?;
 
         self.inner.get(index)
@@ -69,24 +77,27 @@ where
 
     /// Sets the tile at the given coordinates.
     pub(crate) fn set(&mut self, position: Position, tile: T) {
-        let Some(index) = self.position_to_index(&position) else {
+        let Some(index) = self.position_to_index(position) else {
             return;
         };
 
         self.inner[index] = tile;
     }
 
-    /// Returns the width of the Array2D.
+    /// Returns the width of the `Array2D`.
+    #[must_use]
     pub fn width(&self) -> usize {
         self.width
     }
 
-    /// Returns the height of the Array2D.
+    /// Returns the height of the `Array2D`.
+    #[must_use]
     pub fn height(&self) -> usize {
         self.height
     }
 
-    /// Returns the top-left position of the Array2D.
+    /// Returns the top-left position of the `Array2D`.
+    #[must_use]
     pub fn top_left(&self) -> Position {
         Position::new(-self.half_width(), -self.half_height())
     }
@@ -116,17 +127,17 @@ mod tests {
         };
 
         let position = Position::new(0, 0);
-        let tile = array.get(&position);
+        let tile = array.get(position);
         assert_eq!(tile, Some(&(0, 0)));
         let position = Position::new(1, 1);
-        let tile = array.get(&position);
+        let tile = array.get(position);
         assert_eq!(tile, Some(&(1, 1)));
         let position = Position::new(-1, -1);
-        let tile = array.get(&position);
+        let tile = array.get(position);
         assert_eq!(tile, Some(&(-1, -1)));
 
         let position = Position::new(2, 1);
-        let tile = array.get(&position);
+        let tile = array.get(position);
         assert_eq!(tile, None);
     }
 
@@ -135,9 +146,9 @@ mod tests {
         let mut array = Array2D::<usize>::empty(3, 3);
 
         let position = Position::new(0, 0);
-        array.set(position, 100500);
-        let tile = array.get(&position);
-        assert_eq!(tile, Some(&100500));
+        array.set(position, 100_500);
+        let tile = array.get(position);
+        assert_eq!(tile, Some(&100_500));
     }
 
     #[test]

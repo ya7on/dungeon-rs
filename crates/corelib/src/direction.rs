@@ -4,9 +4,13 @@ use crate::position::Position;
 #[derive(Debug)]
 #[repr(u8)]
 pub enum Direction {
+    /// North direction.
     North,
+    /// South direction.
     South,
+    /// East direction.
     East,
+    /// West direction.
     West,
 }
 

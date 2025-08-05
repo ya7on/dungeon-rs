@@ -51,7 +51,6 @@ pub(crate) fn simple_ai(state: &mut GameState) {
                 target.y += 1;
                 if !occupied_positions.contains(&target) {
                     entity.position = target;
-                    continue;
                 }
             }
         }
