@@ -33,7 +33,7 @@ impl EntityId {
 #[derive(Debug)]
 pub struct Actor {
     /// The unique identifier of the actor.
-    pub(crate) id: EntityId,
+    pub(crate) _id: EntityId,
     /// The position of the actor.
     pub(crate) position: Position,
     /// The kind of actor.
@@ -46,7 +46,8 @@ impl Actor {
     /// Creates a new actor with the given position and kind.
     pub(crate) fn create(position: Position, kind: ActorKind) -> Self {
         Actor {
-            id: EntityId::next_entity_id(),
+            // TODO
+            _id: EntityId::next_entity_id(),
             position,
             stats: kind.default_stats(),
             kind,

@@ -12,8 +12,8 @@ pub(crate) fn play() {
         tui.draw_frame(&game);
 
         // TODO: Handle user input
-        match event::read().expect("failed to read event") {
-            Event::Key(key) => match key.code {
+        if let Event::Key(key) = event::read().expect("failed to read event") {
+            match key.code {
                 KeyCode::Char('q') => {
                     ratatui::restore();
                     break;
@@ -46,8 +46,7 @@ pub(crate) fn play() {
                     game.apply_player_action(PlayerAction::Attack(Direction::East));
                 }
                 _ => {}
-            },
-            _ => {}
+            }
         }
     }
 }

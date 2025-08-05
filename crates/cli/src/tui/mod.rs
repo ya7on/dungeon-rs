@@ -3,7 +3,6 @@ use std::io::Stdout;
 use corelib::GameState;
 use ratatui::{
     Terminal,
-    crossterm::event::{self, Event},
     layout::{Constraint, Layout},
     prelude::CrosstermBackend,
     widgets::{Block, Borders, Paragraph},
@@ -26,7 +25,7 @@ impl Default for TuiApplication {
 
 impl TuiApplication {
     pub fn draw_frame(&mut self, state: &GameState) {
-        let viewport = ViewportWidget::from(state);
+        let viewport = ViewportWidget::new(state);
         let stats = StatsWidget::from(state);
 
         self.terminal

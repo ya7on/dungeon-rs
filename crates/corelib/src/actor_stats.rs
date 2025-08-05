@@ -43,7 +43,6 @@ impl ActorKind {
         match self {
             ActorKind::Player => Stats::new(30, 5, 2),
             ActorKind::Enemy => Stats::new(20, 3, 1),
-            ActorKind::Npc => Stats::new(15, 2, 1),
         }
     }
 }

@@ -5,6 +5,4 @@ pub(crate) enum ActorKind {
     Player,
     /// Represents an enemy character.
     Enemy,
-    /// Represents a non-player character.
-    Npc,
 }

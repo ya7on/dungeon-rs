@@ -5,6 +5,7 @@ mod actor;
 mod actor_kind;
 mod actor_stats;
 mod ai;
+mod array2d;
 mod direction;
 mod dungeon;
 mod game_state;
@@ -13,8 +14,9 @@ mod position;
 pub use actions::PlayerAction;
 pub use actor::Actor;
 pub use actor_stats::Stats;
+pub use array2d::Array2D;
 pub use direction::Direction;
-pub use dungeon::{DungeonMap, Tile, Tiles};
+pub use dungeon::{DungeonMap, Tile};
 pub use game_state::GameState;
 pub use position::Position;
 
@@ -22,7 +24,7 @@ pub use position::Position;
 pub fn new_game() -> GameState {
     const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
     const DEFAULT_MAP_WIDTH: usize = 10;
-    const DEFAULT_MAP_HEIGHT: usize = 10;
+    const DEFAULT_MAP_HEIGHT: usize = 20;
 
     let map = dungeon::DungeonMap::generate(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT, DEFAULT_SEED);
 

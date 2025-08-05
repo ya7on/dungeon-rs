@@ -17,7 +17,7 @@ pub struct GameState {
     /// The dungeon map.
     pub(crate) dungeon: DungeonMap,
     /// The seed for random number generation.
-    pub(crate) seed: u64,
+    pub(crate) _seed: u64,
 }
 
 impl GameState {
@@ -28,7 +28,7 @@ impl GameState {
             player,
             entities,
             dungeon: map,
-            seed,
+            _seed: seed,
         }
     }
 

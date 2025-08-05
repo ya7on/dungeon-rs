@@ -2,7 +2,6 @@ use corelib::GameState;
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
-    style::Color,
     widgets::{Block, Borders, Paragraph, Widget},
 };
 
