@@ -10,11 +10,7 @@ pub(crate) fn try_move(state: &mut GameState, direction: &Direction) {
         return;
     }
 
-    if state
-        .entities
-        .iter()
-        .any(|entity| entity.position == new_position)
-    {
+    if state.entities.iter().any(|entity| entity.position == new_position) {
         // TODO: Implement collision detection and boundary checks
         return;
     }
@@ -26,8 +22,8 @@ pub(crate) fn try_move(state: &mut GameState, direction: &Direction) {
 #[cfg(test)]
 mod tests {
     use crate::{
-        GameState, actions::PlayerAction, actor::Actor, direction::Direction, dungeon::DungeonMap,
-        position::Position,
+        GameState, actions::PlayerAction, actor::Actor, direction::Direction,
+        dungeon::DungeonMap, position::Position,
     };
 
     #[test]

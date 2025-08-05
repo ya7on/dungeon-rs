@@ -16,8 +16,10 @@ pub(crate) fn simple_ai(state: &mut GameState) {
         let dist = relative.x().abs() + relative.y().abs();
 
         if dist == 1 {
-            let damage = (entity.stats.attack - state.player.stats.defense).max(1);
-            state.player.stats.hp = state.player.stats.hp.saturating_sub(damage);
+            let damage =
+                (entity.stats.attack - state.player.stats.defense).max(1);
+            state.player.stats.hp =
+                state.player.stats.hp.saturating_sub(damage);
         } else {
             if relative.x > 0 {
                 let mut target = entity.position;

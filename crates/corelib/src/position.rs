@@ -31,10 +31,7 @@ impl Add<Position> for Position {
     type Output = Position;
 
     fn add(self, other: Position) -> Position {
-        Position {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
+        Position { x: self.x + other.x, y: self.y + other.y }
     }
 }
 
@@ -42,9 +39,6 @@ impl Sub<Position> for Position {
     type Output = Position;
 
     fn sub(self, other: Position) -> Position {
-        Position {
-            x: self.x - other.x,
-            y: self.y - other.y,
-        }
+        Position { x: self.x - other.x, y: self.y - other.y }
     }
 }

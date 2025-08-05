@@ -22,26 +22,25 @@ pub struct GameState {
 
 impl GameState {
     /// Creates a new game state with the given player and entities.
-    pub(crate) fn new(player: Actor, entities: Vec<Actor>, map: DungeonMap, seed: u64) -> Self {
-        GameState {
-            tick_id: 0,
-            player,
-            entities,
-            dungeon: map,
-            _seed: seed,
-        }
+    pub(crate) fn new(
+        player: Actor,
+        entities: Vec<Actor>,
+        map: DungeonMap,
+        seed: u64,
+    ) -> Self {
+        GameState { tick_id: 0, player, entities, dungeon: map, _seed: seed }
     }
 
     /// Applies the given player action to the game state.
     pub fn apply_player_action(&mut self, action: PlayerAction) {
         match action {
-            PlayerAction::Skip => {}
+            PlayerAction::Skip => {},
             PlayerAction::Move(direction) => {
                 try_move(self, &direction);
-            }
+            },
             PlayerAction::Attack(direction) => {
                 try_attack(self, &direction);
-            }
+            },
         }
 
         simple_ai(self);

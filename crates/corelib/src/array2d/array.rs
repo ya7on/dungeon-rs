@@ -20,11 +20,7 @@ where
     /// Creates a new empty Tiles instance.
     pub(crate) fn empty(width: usize, height: usize) -> Self {
         let inner = vec![T::default(); width * height].into_boxed_slice();
-        Self {
-            width,
-            height,
-            inner,
-        }
+        Self { width, height, inner }
     }
 
     /// Returns the half width of `Array2D`.

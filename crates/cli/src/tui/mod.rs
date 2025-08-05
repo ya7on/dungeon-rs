@@ -17,9 +17,7 @@ pub struct TuiApplication {
 
 impl Default for TuiApplication {
     fn default() -> Self {
-        Self {
-            terminal: ratatui::init(),
-        }
+        Self { terminal: ratatui::init() }
     }
 }
 
@@ -30,14 +28,19 @@ impl TuiApplication {
 
         self.terminal
             .draw(|frame| {
-                let vertical = Layout::vertical([Constraint::Length(3), Constraint::Min(0)]);
+                let vertical = Layout::vertical([
+                    Constraint::Length(3),
+                    Constraint::Min(0),
+                ]);
                 let [title_area, main_area] = vertical.areas(frame.area());
-                let horizontal =
-                    Layout::horizontal([Constraint::Percentage(50), Constraint::Percentage(50)]);
+                let horizontal = Layout::horizontal([
+                    Constraint::Percentage(50),
+                    Constraint::Percentage(50),
+                ]);
                 let [left_area, right_area] = horizontal.areas(main_area);
 
-                let title =
-                    Paragraph::new("dungeon-rs").block(Block::default().borders(Borders::ALL));
+                let title = Paragraph::new("dungeon-rs")
+                    .block(Block::default().borders(Borders::ALL));
 
                 frame.render_widget(title, title_area);
                 frame.render_widget(viewport, left_area);

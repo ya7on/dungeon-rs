@@ -17,11 +17,7 @@ where
 {
     pub fn new(map: &'a Array2D<T>) -> Self {
         let top_left = map.top_left();
-        Self {
-            inner: map,
-            x: top_left.x,
-            y: top_left.y,
-        }
+        Self { inner: map, x: top_left.x, y: top_left.y }
     }
 }
 
@@ -36,10 +32,7 @@ where
             return None;
         }
 
-        let position = Position {
-            x: self.x,
-            y: self.y,
-        };
+        let position = Position { x: self.x, y: self.y };
         let item = self.inner.get(position);
 
         self.x += 1;
@@ -49,11 +42,7 @@ where
             self.y += 1;
         }
 
-        if let Some(item) = item {
-            Some((position, item))
-        } else {
-            None
-        }
+        if let Some(item) = item { Some((position, item)) } else { None }
     }
 }
 

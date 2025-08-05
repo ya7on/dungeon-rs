@@ -8,11 +8,10 @@ pub(crate) fn try_attack(state: &mut GameState, dir: &Direction) {
         (player.position + attack_pos, player.stats.attack)
     };
 
-    if let Some((idx, target)) = state
-        .entities
-        .iter_mut()
-        .enumerate()
-        .find(|(_, a)| a.position == target_pos && a.kind != ActorKind::Player)
+    if let Some((idx, target)) =
+        state.entities.iter_mut().enumerate().find(|(_, a)| {
+            a.position == target_pos && a.kind != ActorKind::Player
+        })
     {
         let damage = (player_attack - target.stats.defense).max(1);
         target.stats.hp = target.stats.hp.saturating_sub(damage);

@@ -14,11 +14,7 @@ pub struct Stats {
 impl Stats {
     /// Creates a new `Stats` instance with the given values.
     pub(crate) fn new(hp: u32, attack: u32, defense: u32) -> Self {
-        Stats {
-            hp,
-            attack,
-            defense,
-        }
+        Stats { hp, attack, defense }
     }
 
     /// Returns the current health of the actor.

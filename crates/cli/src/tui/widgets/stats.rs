@@ -27,8 +27,10 @@ impl Widget for StatsWidget {
         let attack = self.attack;
         let defense = self.defense;
 
-        let paragraph = Paragraph::new(format!("HP: {hp}\nAttack: {attack}\nDefense: {defense}"))
-            .block(Block::default().title("Stats").borders(Borders::ALL));
+        let paragraph = Paragraph::new(format!(
+            "HP: {hp}\nAttack: {attack}\nDefense: {defense}"
+        ))
+        .block(Block::default().title("Stats").borders(Borders::ALL));
         paragraph.render(area, buf);
     }
 }
