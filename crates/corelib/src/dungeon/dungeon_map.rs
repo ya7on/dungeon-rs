@@ -18,12 +18,12 @@ impl DungeonMap {
         width: usize,
         height: usize,
         rng: &mut MyRng,
+        floor_tiles: usize,
     ) -> Self {
-        const MAX_FLOOR_TILES: usize = 1000;
         let mut tiles = Array2D::empty(width, height);
         let mut current_position = Position { x: 0, y: 0 };
         let mut total_tiles = 0;
-        while total_tiles < MAX_FLOOR_TILES {
+        while total_tiles < floor_tiles {
             if tiles.get(current_position) == Some(&Tile::Empty) {
                 tiles.set(current_position, Tile::Floor);
                 total_tiles += 1;

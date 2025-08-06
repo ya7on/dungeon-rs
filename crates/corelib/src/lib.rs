@@ -27,27 +27,38 @@ pub use game_state::GameState;
 pub use position::Position;
 use rng::MyRng;
 
+/// Settings for the world generation.
+pub struct WorldSettings {
+    /// Seed for the random number generator.
+    pub seed: [u8; 32],
+    /// Width of the map.
+    pub map_width: usize,
+    /// Height of the map.
+    pub map_height: usize,
+    /// Number of floor tiles.
+    pub floor_tiles: usize,
+    /// Number of enemies.
+    pub enemies: usize,
+}
+
 /// Creates a new game instance.
 #[must_use]
-pub fn new_game() -> GameState {
-    const DEFAULT_SEED: [u8; 32] = [0; 32];
-    const DEFAULT_MAP_WIDTH: usize = 101;
-    const DEFAULT_MAP_HEIGHT: usize = 101;
-
-    let mut rng = MyRng::from_seed(DEFAULT_SEED);
+pub fn new_game(settings: &WorldSettings) -> GameState {
+    let mut rng = MyRng::from_seed(settings.seed);
 
     let map = dungeon::DungeonMap::generate(
-        DEFAULT_MAP_WIDTH,
-        DEFAULT_MAP_HEIGHT,
+        settings.map_width,
+        settings.map_height,
         &mut rng,
+        settings.floor_tiles,
     );
 
-    let mut entities = Vec::with_capacity(10);
+    let mut entities = Vec::with_capacity(settings.enemies);
     while entities.len() < entities.capacity() {
         let half_width =
-            i32::try_from(DEFAULT_MAP_WIDTH).unwrap_or(i32::MAX) / 2;
+            i32::try_from(settings.map_width).unwrap_or(i32::MAX) / 2;
         let half_height =
-            i32::try_from(DEFAULT_MAP_HEIGHT).unwrap_or(i32::MAX) / 2;
+            i32::try_from(settings.map_height).unwrap_or(i32::MAX) / 2;
         let x = rng.range(-half_width..=half_width);
         let y = rng.range(-half_height..=half_height);
 

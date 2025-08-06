@@ -93,9 +93,19 @@ where
     }
 
     /// Returns the top-left position of the `Array2D`.
+    ///
+    /// First position of the `Array2D`.
     #[must_use]
     pub fn top_left(&self) -> Position {
         Position::new(-self.half_width(), -self.half_height())
+    }
+
+    /// Returns the bottom-right position of the `Array2D`.
+    ///
+    /// Last position of the `Array2D`.
+    #[must_use]
+    pub fn bottom_right(&self) -> Position {
+        Position::new(self.half_width(), self.half_height())
     }
 }
 

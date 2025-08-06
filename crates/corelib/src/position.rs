@@ -1,7 +1,7 @@
 use std::ops::{Add, AddAssign, Sub};
 
 /// Represents a position in the game.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Position {
     /// The x-coordinate of the position.
     pub x: i32,

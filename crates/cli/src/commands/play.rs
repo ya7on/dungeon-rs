@@ -1,11 +1,30 @@
-use corelib::{Direction, PlayerAction, new_game};
+use corelib::{Direction, PlayerAction, WorldSettings, new_game};
 use ratatui::crossterm::event::{self, Event, KeyCode};
+use sha2::Digest;
 
 use crate::tui::TuiApplication;
 
+fn seed_from_u64(seed: u64) -> [u8; 32] {
+    let mut hasher = sha2::Sha256::new();
+    hasher.update(seed.to_be_bytes());
+    hasher.finalize().into()
+}
+
 /// Run TUI with game
-pub(crate) fn play() {
-    let mut game = new_game();
+pub(crate) fn play(
+    seed: u64,
+    map_width: usize,
+    map_height: usize,
+    floor_tiles: usize,
+    enemies: usize,
+) {
+    let mut game = new_game(&WorldSettings {
+        seed: seed_from_u64(seed),
+        map_width,
+        map_height,
+        floor_tiles,
+        enemies,
+    });
     let mut tui = TuiApplication::default();
 
     loop {

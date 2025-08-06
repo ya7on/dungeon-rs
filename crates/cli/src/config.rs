@@ -12,5 +12,21 @@ pub(crate) struct Config {
 #[derive(Subcommand)]
 pub(crate) enum Commands {
     /// Play game in terminal UI (TUI)
-    Play,
+    Play {
+        /// Seed for the random number generator.
+        #[arg(long)]
+        seed: Option<u64>,
+        /// Width of the map.
+        #[arg(long)]
+        map_width: Option<usize>,
+        /// Height of the map.
+        #[arg(long)]
+        map_height: Option<usize>,
+        /// Maximum number of tiles per floor.
+        #[arg(long)]
+        floor_tiles: Option<usize>,
+        /// Maximum number of enemies.
+        #[arg(long)]
+        enemies: Option<usize>,
+    },
 }
