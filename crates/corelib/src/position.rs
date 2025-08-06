@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, AddAssign, Sub};
 
 /// Represents a position in the game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -32,6 +32,13 @@ impl Add<Position> for Position {
 
     fn add(self, other: Position) -> Position {
         Position { x: self.x + other.x, y: self.y + other.y }
+    }
+}
+
+impl AddAssign<Position> for Position {
+    fn add_assign(&mut self, other: Position) {
+        self.x += other.x;
+        self.y += other.y;
     }
 }
 

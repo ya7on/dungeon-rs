@@ -28,7 +28,7 @@ pub(crate) fn try_attack(state: &mut GameState, dir: &Direction) {
 #[cfg(test)]
 mod tests {
 
-    use crate::{actor::Actor, dungeon::DungeonMap, position::Position};
+    use crate::{MyRng, actor::Actor, dungeon::DungeonMap, position::Position};
 
     use super::*;
 
@@ -42,8 +42,8 @@ mod tests {
                 Actor::create(Position { x: 0, y: 1 }, ActorKind::Enemy),
                 Actor::create(Position { x: 0, y: -1 }, ActorKind::Enemy),
             ],
-            DungeonMap::generate(10, 10, 0),
-            0,
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
         );
         try_attack(&mut gs, &Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
@@ -66,8 +66,8 @@ mod tests {
                 Actor::create(Position { x: 0, y: 1 }, ActorKind::Enemy),
                 Actor::create(Position { x: 0, y: -1 }, ActorKind::Enemy),
             ],
-            DungeonMap::generate(10, 10, 0),
-            0,
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
         );
         try_attack(&mut gs, &Direction::North);
         try_attack(&mut gs, &Direction::North);

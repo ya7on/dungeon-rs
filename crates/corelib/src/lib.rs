@@ -14,50 +14,55 @@ mod direction;
 mod dungeon;
 mod game_state;
 mod position;
+mod rng;
 
 pub use actions::PlayerAction;
 pub use actor::Actor;
+use actor_kind::ActorKind;
 pub use actor_stats::Stats;
 pub use array2d::Array2D;
 pub use direction::Direction;
 pub use dungeon::{DungeonMap, Tile};
 pub use game_state::GameState;
 pub use position::Position;
+use rng::MyRng;
 
 /// Creates a new game instance.
 #[must_use]
 pub fn new_game() -> GameState {
-    const DEFAULT_SEED: u64 = 0; // TODO: Implement proper seeding
-    const DEFAULT_MAP_WIDTH: usize = 100;
-    const DEFAULT_MAP_HEIGHT: usize = 100;
+    const DEFAULT_SEED: [u8; 32] = [0; 32];
+    const DEFAULT_MAP_WIDTH: usize = 101;
+    const DEFAULT_MAP_HEIGHT: usize = 101;
+
+    let mut rng = MyRng::from_seed(DEFAULT_SEED);
 
     let map = dungeon::DungeonMap::generate(
         DEFAULT_MAP_WIDTH,
         DEFAULT_MAP_HEIGHT,
-        DEFAULT_SEED,
+        &mut rng,
     );
+
+    let mut entities = Vec::with_capacity(10);
+    while entities.len() < entities.capacity() {
+        let half_width =
+            i32::try_from(DEFAULT_MAP_WIDTH).unwrap_or(i32::MAX) / 2;
+        let half_height =
+            i32::try_from(DEFAULT_MAP_HEIGHT).unwrap_or(i32::MAX) / 2;
+        let x = rng.range(-half_width..=half_width);
+        let y = rng.range(-half_height..=half_height);
+
+        if map.get_tile(Position { x, y }) == &Tile::Floor {
+            entities.push(actor::Actor::create(
+                position::Position { x, y },
+                ActorKind::Enemy,
+            ));
+        }
+    }
 
     GameState::new(
         actor::Actor::create_player(position::Position { x: 0, y: 0 }),
-        vec![
-            Actor::create(
-                Position { x: 0, y: -4 },
-                actor_kind::ActorKind::Enemy,
-            ),
-            Actor::create(
-                Position { x: 0, y: 9 },
-                actor_kind::ActorKind::Enemy,
-            ),
-            Actor::create(
-                Position { x: -1, y: 1 },
-                actor_kind::ActorKind::Enemy,
-            ),
-            Actor::create(
-                Position { x: 9, y: -1 },
-                actor_kind::ActorKind::Enemy,
-            ),
-        ],
+        entities,
         map,
-        DEFAULT_SEED,
+        rng,
     )
 }

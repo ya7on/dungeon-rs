@@ -23,7 +23,7 @@ pub(crate) fn try_move(state: &mut GameState, direction: &Direction) {
 mod tests {
     use crate::{
         GameState, actions::PlayerAction, actor::Actor, direction::Direction,
-        dungeon::DungeonMap, position::Position,
+        dungeon::DungeonMap, position::Position, rng::MyRng,
     };
 
     #[test]
@@ -33,8 +33,8 @@ mod tests {
             let mut gs = GameState::new(
                 Actor::create_player(Position::new(1, 1)),
                 vec![],
-                DungeonMap::generate(10, 10, 0),
-                0,
+                DungeonMap::simple(10, 10),
+                MyRng::new(),
             );
             gs.apply_player_action(PlayerAction::Move(Direction::North));
             assert_eq!(gs.player.position, Position::new(1, 0));
@@ -45,8 +45,8 @@ mod tests {
             let mut gs = GameState::new(
                 Actor::create_player(Position::new(1, 1)),
                 vec![],
-                DungeonMap::generate(10, 10, 0),
-                0,
+                DungeonMap::simple(10, 10),
+                MyRng::new(),
             );
             gs.apply_player_action(PlayerAction::Move(Direction::South));
             assert_eq!(gs.player.position, Position::new(1, 2));
@@ -57,8 +57,8 @@ mod tests {
             let mut gs = GameState::new(
                 Actor::create_player(Position::new(1, 1)),
                 vec![],
-                DungeonMap::generate(10, 10, 0),
-                0,
+                DungeonMap::simple(10, 10),
+                MyRng::new(),
             );
             gs.apply_player_action(PlayerAction::Move(Direction::East));
             assert_eq!(gs.player.position, Position::new(2, 1));
@@ -69,8 +69,8 @@ mod tests {
             let mut gs = GameState::new(
                 Actor::create_player(Position::new(1, 1)),
                 vec![],
-                DungeonMap::generate(10, 10, 0),
-                0,
+                DungeonMap::simple(10, 10),
+                MyRng::new(),
             );
             gs.apply_player_action(PlayerAction::Move(Direction::West));
             assert_eq!(gs.player.position, Position::new(0, 1));
@@ -82,8 +82,8 @@ mod tests {
         let mut gs = GameState::new(
             Actor::create_player(Position::new(0, -5)),
             vec![],
-            DungeonMap::generate(10, 10, 0),
-            0,
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
         );
 
         // Not allowed to move

@@ -1,5 +1,5 @@
 /// Represents a tile in the dungeon.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Tile {
     #[default]

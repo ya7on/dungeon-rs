@@ -41,7 +41,7 @@ impl Widget for ViewportWidget<'_> {
                 let tile = dungeon.get_tile(pos);
 
                 let (mut symbol, mut color) = match tile {
-                    Tile::Floor => ("_", Color::White),
+                    Tile::Floor => ("_", Color::Green),
                     Tile::Empty => (".", Color::Black),
                 };
 

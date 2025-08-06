@@ -3,6 +3,7 @@ use crate::{
     actor::Actor,
     ai::simple_ai,
     dungeon::DungeonMap,
+    rng::MyRng,
 };
 
 /// Represents the state of the game.
@@ -16,8 +17,8 @@ pub struct GameState {
     pub(crate) entities: Vec<Actor>,
     /// The dungeon map.
     pub(crate) dungeon: DungeonMap,
-    /// The seed for random number generation.
-    pub(crate) _seed: u64,
+    /// The random number generator.
+    pub(crate) rng: MyRng,
 }
 
 impl GameState {
@@ -26,9 +27,9 @@ impl GameState {
         player: Actor,
         entities: Vec<Actor>,
         map: DungeonMap,
-        seed: u64,
+        rng: MyRng,
     ) -> Self {
-        GameState { tick_id: 0, player, entities, dungeon: map, _seed: seed }
+        GameState { tick_id: 0, player, entities, dungeon: map, rng }
     }
 
     /// Applies the given player action to the game state.
@@ -84,8 +85,8 @@ mod tests {
         let mut gs = GameState::new(
             Actor::create_player(Position::new(0, 0)),
             vec![],
-            DungeonMap::generate(10, 10, 0),
-            42,
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
         );
 
         gs.apply_player_action(PlayerAction::Skip);
