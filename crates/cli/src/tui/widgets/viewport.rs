@@ -47,11 +47,11 @@ impl Widget for ViewportWidget<'_> {
 
                 // TODO: Fix it
                 if self.state.entities().iter().any(|e| e.position() == pos) {
-                    symbol = "E";
+                    symbol = "🐺";
                     color = Color::Red;
                 };
                 if pos == player_pos {
-                    symbol = "@";
+                    symbol = "🦀";
                     color = Color::Yellow;
                 }
 
