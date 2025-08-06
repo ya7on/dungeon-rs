@@ -51,7 +51,7 @@ pub fn new_game() -> GameState {
         let x = rng.range(-half_width..=half_width);
         let y = rng.range(-half_height..=half_height);
 
-        if map.get_tile(Position { x, y }) == &Tile::Floor {
+        if map.is_walkable(Position { x, y }) {
             entities.push(actor::Actor::create(
                 position::Position { x, y },
                 ActorKind::Enemy,

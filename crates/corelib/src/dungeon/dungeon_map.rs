@@ -81,6 +81,12 @@ impl DungeonMap {
         self.tiles.get(position).unwrap_or(&Tile::Empty)
     }
 
+    /// Returns true if the tile at the given position is walkable.
+    #[must_use]
+    pub fn is_walkable(&self, position: Position) -> bool {
+        self.get_tile(position).is_walkable()
+    }
+
     /// Returns an iterator over the tiles in the dungeon map.
     pub fn iter(&self) -> impl Iterator<Item = (Position, &Tile)> {
         <&Self as IntoIterator>::into_iter(self)
