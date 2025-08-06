@@ -1,4 +1,7 @@
+use std::collections::HashMap;
+
 use crate::{
+    Position,
     actions::{PlayerAction, try_attack, try_move},
     actor::Actor,
     ai::simple_ai,
@@ -44,7 +47,16 @@ impl GameState {
             },
         }
 
-        simple_ai(self);
+        let mut walkable_map = self
+            .dungeon
+            .iter()
+            .map(|(position, tile)| (position, tile.is_walkable()))
+            .collect::<HashMap<Position, bool>>();
+        walkable_map.insert(self.player.position, false);
+        for entity in &self.entities {
+            walkable_map.insert(entity.position, false);
+        }
+        simple_ai(self, &mut walkable_map);
 
         self.tick_id += 1;
     }
