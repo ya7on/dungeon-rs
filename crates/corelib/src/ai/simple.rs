@@ -1,15 +1,24 @@
-use std::collections::HashMap;
+use std::collections::VecDeque;
 
-use crate::{GameState, Position};
+use crate::{
+    Direction, GameState, events::GameEvent, mechanics::try_move,
+    walk_map::WalkMap,
+};
 
 /// Simple AI implementation for entities.
 /// 1. Moves towards the player.
 /// 2. Attacks the player if within range.
 pub(crate) fn simple_ai(
     state: &mut GameState,
-    walkable_map: &mut HashMap<Position, bool>,
-) {
+    walk_map: &mut WalkMap,
+) -> VecDeque<GameEvent> {
+    let mut events = VecDeque::new();
+
     for entity in &mut state.entities {
+        if !entity.is_alive() {
+            continue;
+        }
+
         let relative = entity.position - state.player.position;
         let dist = relative.x().abs() + relative.y().abs();
 
@@ -21,47 +30,26 @@ pub(crate) fn simple_ai(
             continue;
         }
 
-        if relative.x > 0 {
-            let mut target = entity.position;
-            target.x -= 1;
-            if *walkable_map.get(&target).unwrap_or(&false) {
-                walkable_map.insert(entity.position, true);
-                entity.position = target;
-                walkable_map.insert(entity.position, false);
-                continue;
-            }
-        }
-
-        if relative.x < 0 {
-            let mut target = entity.position;
-            target.x += 1;
-            if *walkable_map.get(&target).unwrap_or(&false) {
-                walkable_map.insert(entity.position, true);
-                entity.position = target;
-                walkable_map.insert(entity.position, false);
-                continue;
-            }
-        }
-
-        if relative.y > 0 {
-            let mut target = entity.position;
-            target.y -= 1;
-            if *walkable_map.get(&target).unwrap_or(&false) {
-                walkable_map.insert(entity.position, true);
-                entity.position = target;
-                walkable_map.insert(entity.position, false);
-                continue;
-            }
-        }
-
-        if relative.y < 0 {
-            let mut target = entity.position;
-            target.y += 1;
-            if *walkable_map.get(&target).unwrap_or(&false) {
-                walkable_map.insert(entity.position, true);
-                entity.position = target;
-                walkable_map.insert(entity.position, false);
+        for direction in [
+            (relative.x > 0, Direction::West),
+            (relative.x < 0, Direction::East),
+            (relative.y > 0, Direction::North),
+            (relative.y < 0, Direction::South),
+        ] {
+            let (condition, direction) = direction;
+            if condition {
+                if let Some((from, to)) = try_move(entity, direction, walk_map)
+                {
+                    events.push_back(GameEvent::EntityMoved {
+                        id: entity.id(),
+                        from,
+                        to,
+                    });
+                    break;
+                }
             }
         }
     }
+
+    events
 }

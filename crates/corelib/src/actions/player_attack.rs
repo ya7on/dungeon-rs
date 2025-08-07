@@ -1,28 +1,27 @@
-use crate::{GameState, actor_kind::ActorKind, direction::Direction};
+use crate::{
+    GameState, actor_kind::ActorKind, direction::Direction, events::GameEvent,
+    mechanics::try_attack,
+};
 
 /// Attacks the enemy in the specified direction.
-pub(crate) fn try_attack(state: &mut GameState, dir: &Direction) {
-    let (target_pos, player_attack) = {
-        let attack_pos = dir.to_offset_position();
-        let player = state.player();
-        (player.position + attack_pos, player.stats.attack)
+pub(crate) fn player_attack(
+    state: &mut GameState,
+    direction: Direction,
+) -> Vec<GameEvent> {
+    let player_position = state.player.position();
+    let target_position = player_position + direction.to_offset_position();
+
+    let Some(target) = state
+        .entities
+        .iter_mut()
+        .find(|a| a.position == target_position && a.kind != ActorKind::Player)
+    else {
+        return vec![GameEvent::PlayerAttackMissed];
     };
 
-    if let Some((idx, target)) =
-        state.entities.iter_mut().enumerate().find(|(_, a)| {
-            a.position == target_pos && a.kind != ActorKind::Player
-        })
-    {
-        let damage = (player_attack - target.stats.defense).max(1);
-        target.stats.hp = target.stats.hp.saturating_sub(damage);
+    let damage = try_attack(&mut state.player, target);
 
-        if target.stats.hp == 0 {
-            // TODO: Implement enemy death logic
-            state.remove_entity_by_index(idx);
-        }
-    } else {
-        // TODO: Implement attack miss logic
-    }
+    vec![GameEvent::PlayerAttacked { target: target.id(), damage }]
 }
 
 #[cfg(test)]
@@ -45,7 +44,7 @@ mod tests {
             DungeonMap::simple(10, 10),
             MyRng::new(),
         );
-        try_attack(&mut gs, &Direction::North);
+        player_attack(&mut gs, Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));
         assert_eq!(gs.entities[1].stats.hp, 20);
@@ -69,17 +68,19 @@ mod tests {
             DungeonMap::simple(10, 10),
             MyRng::new(),
         );
-        try_attack(&mut gs, &Direction::North);
-        try_attack(&mut gs, &Direction::North);
-        try_attack(&mut gs, &Direction::North);
-        try_attack(&mut gs, &Direction::North);
-        try_attack(&mut gs, &Direction::North);
-        assert_eq!(gs.entities.len(), 3);
+        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));
         assert_eq!(gs.entities[1].stats.hp, 20);
         assert_eq!(gs.entities[1].position, Position::new(-1, 0));
         assert_eq!(gs.entities[2].stats.hp, 20);
         assert_eq!(gs.entities[2].position, Position::new(0, 1));
+        assert_eq!(gs.entities[3].stats.hp, 0);
+        assert_eq!(gs.entities[3].position, Position::new(0, -1));
+        assert!(!gs.entities[3].is_alive());
     }
 }

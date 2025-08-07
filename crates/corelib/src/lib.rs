@@ -1,6 +1,11 @@
 #![warn(clippy::all)]
 #![warn(clippy::pedantic)]
+// #![warn(clippy::nursery)] TODO: update code with this linting rule
 #![warn(missing_docs)]
+// #![warn(clippy::cargo)] Update Cargo.toml
+#![warn(clippy::unwrap_used)]
+#![warn(clippy::expect_used)]
+#![forbid(unsafe_code)]
 
 //! This module contains the core game logic and data structures.
 
@@ -14,8 +19,10 @@ mod direction;
 mod dungeon;
 mod events;
 mod game_state;
+mod mechanics;
 mod position;
 mod rng;
+mod walk_map;
 
 pub use actions::PlayerAction;
 pub use actor::Actor;

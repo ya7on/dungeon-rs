@@ -1,8 +1,7 @@
 use crate::position::Position;
 
 /// Represents a direction in the game world.
-#[derive(Debug)]
-#[repr(u8)]
+#[derive(Debug, Clone, Copy)]
 pub enum Direction {
     /// North direction.
     North,
@@ -16,7 +15,7 @@ pub enum Direction {
 
 impl Direction {
     /// Returns the offset of the direction.
-    pub(crate) fn to_offset_position(&self) -> Position {
+    pub(crate) fn to_offset_position(self) -> Position {
         match self {
             Direction::North => Position::new(0, -1),
             Direction::South => Position::new(0, 1),

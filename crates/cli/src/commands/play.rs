@@ -38,45 +38,45 @@ pub(crate) fn play(
                     break;
                 },
                 KeyCode::Char(' ') => {
-                    game.apply_player_action(PlayerAction::Skip);
+                    game.apply_player_action(&PlayerAction::Skip);
                 },
                 KeyCode::Char('w') => {
-                    game.apply_player_action(PlayerAction::Move(
+                    game.apply_player_action(&PlayerAction::Move(
                         Direction::North,
                     ));
                 },
                 KeyCode::Char('s') => {
-                    game.apply_player_action(PlayerAction::Move(
+                    game.apply_player_action(&PlayerAction::Move(
                         Direction::South,
                     ));
                 },
                 KeyCode::Char('a') => {
-                    game.apply_player_action(PlayerAction::Move(
+                    game.apply_player_action(&PlayerAction::Move(
                         Direction::West,
                     ));
                 },
                 KeyCode::Char('d') => {
-                    game.apply_player_action(PlayerAction::Move(
+                    game.apply_player_action(&PlayerAction::Move(
                         Direction::East,
                     ));
                 },
                 KeyCode::Char('W') => {
-                    game.apply_player_action(PlayerAction::Attack(
+                    game.apply_player_action(&PlayerAction::Attack(
                         Direction::North,
                     ));
                 },
                 KeyCode::Char('S') => {
-                    game.apply_player_action(PlayerAction::Attack(
+                    game.apply_player_action(&PlayerAction::Attack(
                         Direction::South,
                     ));
                 },
                 KeyCode::Char('A') => {
-                    game.apply_player_action(PlayerAction::Attack(
+                    game.apply_player_action(&PlayerAction::Attack(
                         Direction::West,
                     ));
                 },
                 KeyCode::Char('D') => {
-                    game.apply_player_action(PlayerAction::Attack(
+                    game.apply_player_action(&PlayerAction::Attack(
                         Direction::East,
                     ));
                 },

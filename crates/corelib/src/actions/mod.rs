@@ -1,8 +1,8 @@
-mod try_attack;
-mod try_move;
+mod player_attack;
+mod player_move;
 
-pub(crate) use try_attack::try_attack;
-pub(crate) use try_move::try_move;
+pub(crate) use player_attack::player_attack;
+pub(crate) use player_move::player_move;
 
 use crate::direction::Direction;
 

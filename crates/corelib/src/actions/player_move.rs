@@ -1,22 +1,24 @@
-use crate::{GameState, direction::Direction};
+use crate::{
+    GameState, direction::Direction, events::GameEvent, mechanics::try_move,
+    walk_map::WalkMap,
+};
 
 /// Moves the player in the specified direction.
-pub(crate) fn try_move(state: &mut GameState, direction: &Direction) {
-    let new_position = state.player.position + direction.to_offset_position();
-
-    let tile = state.dungeon.get_tile(new_position);
-    if !tile.is_walkable() {
-        // TODO: Implement collision detection and boundary checks
-        return;
+pub(crate) fn player_move(
+    state: &mut GameState,
+    direction: Direction,
+    walk_map: &mut WalkMap,
+) -> Vec<GameEvent> {
+    if let Some((old_position, new_position)) =
+        try_move(&mut state.player, direction, walk_map)
+    {
+        vec![GameEvent::PlayerMoved { from: old_position, to: new_position }]
+    } else {
+        vec![GameEvent::PlayerBumped {
+            position: state.player.position,
+            direction,
+        }]
     }
-
-    if state.entities.iter().any(|entity| entity.position == new_position) {
-        // TODO: Implement collision detection and boundary checks
-        return;
-    }
-
-    // TODO: Implement movement logic with collision detection and boundary checks
-    state.player.position = new_position;
 }
 
 #[cfg(test)]
@@ -36,7 +38,7 @@ mod tests {
                 DungeonMap::simple(10, 10),
                 MyRng::new(),
             );
-            gs.apply_player_action(PlayerAction::Move(Direction::North));
+            gs.apply_player_action(&PlayerAction::Move(Direction::North));
             assert_eq!(gs.player.position, Position::new(1, 0));
         }
 
@@ -48,7 +50,7 @@ mod tests {
                 DungeonMap::simple(10, 10),
                 MyRng::new(),
             );
-            gs.apply_player_action(PlayerAction::Move(Direction::South));
+            gs.apply_player_action(&PlayerAction::Move(Direction::South));
             assert_eq!(gs.player.position, Position::new(1, 2));
         }
 
@@ -60,7 +62,7 @@ mod tests {
                 DungeonMap::simple(10, 10),
                 MyRng::new(),
             );
-            gs.apply_player_action(PlayerAction::Move(Direction::East));
+            gs.apply_player_action(&PlayerAction::Move(Direction::East));
             assert_eq!(gs.player.position, Position::new(2, 1));
         }
 
@@ -72,7 +74,7 @@ mod tests {
                 DungeonMap::simple(10, 10),
                 MyRng::new(),
             );
-            gs.apply_player_action(PlayerAction::Move(Direction::West));
+            gs.apply_player_action(&PlayerAction::Move(Direction::West));
             assert_eq!(gs.player.position, Position::new(0, 1));
         }
     }
@@ -87,11 +89,11 @@ mod tests {
         );
 
         // Not allowed to move
-        gs.apply_player_action(PlayerAction::Move(Direction::North));
+        gs.apply_player_action(&PlayerAction::Move(Direction::North));
         assert_eq!(gs.player.position, Position::new(0, -5));
 
         // Allowed to move to walkable
-        gs.apply_player_action(PlayerAction::Move(Direction::East));
+        gs.apply_player_action(&PlayerAction::Move(Direction::East));
         assert_eq!(gs.player.position, Position::new(1, -5));
     }
 }

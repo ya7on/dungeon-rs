@@ -1,12 +1,13 @@
-use std::collections::HashMap;
+use std::collections::VecDeque;
 
 use crate::{
-    Position,
-    actions::{PlayerAction, try_attack, try_move},
+    actions::{PlayerAction, player_attack, player_move},
     actor::Actor,
     ai::simple_ai,
     dungeon::DungeonMap,
+    events::GameEvent,
     rng::MyRng,
+    walk_map::WalkMap,
 };
 
 /// Represents the state of the game.
@@ -36,29 +37,41 @@ impl GameState {
     }
 
     /// Applies the given player action to the game state.
-    pub fn apply_player_action(&mut self, action: PlayerAction) {
-        match action {
-            PlayerAction::Skip => {},
-            PlayerAction::Move(direction) => {
-                try_move(self, &direction);
-            },
-            PlayerAction::Attack(direction) => {
-                try_attack(self, &direction);
-            },
-        }
-
-        let mut walkable_map = self
+    pub fn apply_player_action(
+        &mut self,
+        action: &PlayerAction,
+    ) -> VecDeque<GameEvent> {
+        let mut walk_map = self
             .dungeon
             .iter()
-            .map(|(position, tile)| (position, tile.is_walkable()))
-            .collect::<HashMap<Position, bool>>();
-        walkable_map.insert(self.player.position, false);
+            .filter_map(|(position, tile)| {
+                (tile.is_walkable()).then_some(position)
+            })
+            .collect::<WalkMap>();
         for entity in &self.entities {
-            walkable_map.insert(entity.position, false);
+            walk_map.occupy(entity.position);
         }
-        simple_ai(self, &mut walkable_map);
+        walk_map.occupy(self.player.position);
+
+        let mut events = VecDeque::new();
+
+        match action {
+            PlayerAction::Skip => {
+                events.push_back(GameEvent::PlayerSkippedMove);
+            },
+            PlayerAction::Move(direction) => {
+                events.extend(player_move(self, *direction, &mut walk_map));
+            },
+            PlayerAction::Attack(direction) => {
+                events.extend(player_attack(self, *direction));
+            },
+        }
+
+        events.extend(simple_ai(self, &mut walk_map));
 
         self.tick_id += 1;
+
+        events
     }
 
     /// Returns a reference to the player.
@@ -78,11 +91,6 @@ impl GameState {
     pub fn dungeon(&self) -> &DungeonMap {
         &self.dungeon
     }
-
-    /// Removes an entity from the game state by its vector index.
-    pub(crate) fn remove_entity_by_index(&mut self, index: usize) {
-        self.entities.swap_remove(index);
-    }
 }
 
 #[cfg(test)]
@@ -101,7 +109,7 @@ mod tests {
             MyRng::new(),
         );
 
-        gs.apply_player_action(PlayerAction::Skip);
+        gs.apply_player_action(&PlayerAction::Skip);
 
         assert_eq!(gs.tick_id, 1);
     }

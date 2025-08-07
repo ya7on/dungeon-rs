@@ -7,8 +7,8 @@ static ENTITY_ID_COUNTER: AtomicU32 = AtomicU32::new(0);
 
 /// Represents the unique identifier of an entity.
 /// Uniqueness is guaranteed by the atomic counter.
-#[derive(Debug, PartialEq, Eq)]
-pub(crate) struct EntityId(u32);
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EntityId(u32);
 
 impl From<u32> for EntityId {
     fn from(id: u32) -> Self {
@@ -33,7 +33,7 @@ impl EntityId {
 #[derive(Debug)]
 pub struct Actor {
     /// The unique identifier of the actor.
-    pub(crate) _id: EntityId,
+    pub(crate) id: EntityId,
     /// The position of the actor.
     pub(crate) position: Position,
     /// The kind of actor.
@@ -46,8 +46,7 @@ impl Actor {
     /// Creates a new actor with the given position and kind.
     pub(crate) fn create(position: Position, kind: ActorKind) -> Self {
         Actor {
-            // TODO
-            _id: EntityId::next_entity_id(),
+            id: EntityId::next_entity_id(),
             position,
             stats: kind.default_stats(),
             kind,
@@ -57,6 +56,12 @@ impl Actor {
     /// Creates a new player actor with the given position.
     pub(crate) fn create_player(position: Position) -> Self {
         Actor::create(position, ActorKind::Player)
+    }
+
+    /// Returns the unique identifier of the actor.
+    #[must_use]
+    pub(crate) fn id(&self) -> EntityId {
+        self.id
     }
 
     /// Returns the position of the actor.
@@ -69,5 +74,11 @@ impl Actor {
     #[must_use]
     pub fn stats(&self) -> &Stats {
         &self.stats
+    }
+
+    /// Returns true if the actor is alive.
+    #[must_use]
+    pub(crate) fn is_alive(&self) -> bool {
+        self.stats.hp > 0
     }
 }
