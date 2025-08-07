@@ -12,6 +12,7 @@ mod ai;
 mod array2d;
 mod direction;
 mod dungeon;
+mod events;
 mod game_state;
 mod position;
 mod rng;
