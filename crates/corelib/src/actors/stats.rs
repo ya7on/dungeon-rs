@@ -1,4 +1,4 @@
-use crate::actor_kind::ActorKind;
+use super::ActorKind;
 
 /// Represents the stats of an actor.
 #[derive(Debug)]

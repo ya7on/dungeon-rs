@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use crate::{
     actions::{PlayerAction, player_attack, player_move},
-    actor::Actor,
+    actors::Actor,
     ai::simple_ai,
     dungeon::DungeonMap,
     events::GameEvent,

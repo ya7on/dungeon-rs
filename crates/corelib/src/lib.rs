@@ -10,9 +10,7 @@
 //! This module contains the core game logic and data structures.
 
 mod actions;
-mod actor;
-mod actor_kind;
-mod actor_stats;
+mod actors;
 mod ai;
 mod array2d;
 mod direction;
@@ -25,9 +23,7 @@ mod rng;
 mod walk_map;
 
 pub use actions::PlayerAction;
-pub use actor::Actor;
-use actor_kind::ActorKind;
-pub use actor_stats::Stats;
+pub use actors::{Actor, ActorKind, Stats};
 pub use array2d::Array2D;
 pub use direction::Direction;
 pub use dungeon::{DungeonMap, Tile};
@@ -71,7 +67,7 @@ pub fn new_game(settings: &WorldSettings) -> GameState {
         let y = rng.range(-half_height..=half_height);
 
         if map.is_walkable(Position { x, y }) {
-            entities.push(actor::Actor::create(
+            entities.push(actors::Actor::create(
                 position::Position { x, y },
                 ActorKind::Enemy,
             ));
@@ -79,7 +75,7 @@ pub fn new_game(settings: &WorldSettings) -> GameState {
     }
 
     GameState::new(
-        actor::Actor::create_player(position::Position { x: 0, y: 0 }),
+        actors::Actor::create_player(position::Position { x: 0, y: 0 }),
         entities,
         map,
         rng,

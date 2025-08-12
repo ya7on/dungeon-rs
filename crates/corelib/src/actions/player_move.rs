@@ -24,7 +24,7 @@ pub(crate) fn player_move(
 #[cfg(test)]
 mod tests {
     use crate::{
-        GameState, actions::PlayerAction, actor::Actor, direction::Direction,
+        GameState, actions::PlayerAction, actors::Actor, direction::Direction,
         dungeon::DungeonMap, position::Position, rng::MyRng,
     };
 

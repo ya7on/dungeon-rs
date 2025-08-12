@@ -1,6 +1,8 @@
 use std::sync::atomic::{AtomicU32, Ordering};
 
-use crate::{actor_kind::ActorKind, actor_stats::Stats, position::Position};
+use crate::position::Position;
+
+use super::{ActorKind, stats::Stats};
 
 /// Atomic counter for generating unique entity IDs.
 static ENTITY_ID_COUNTER: AtomicU32 = AtomicU32::new(0);

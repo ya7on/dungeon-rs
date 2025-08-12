@@ -1,5 +1,5 @@
 use crate::{
-    GameState, actor_kind::ActorKind, direction::Direction, events::GameEvent,
+    GameState, actors::ActorKind, direction::Direction, events::GameEvent,
     mechanics::try_attack,
 };
 
@@ -27,7 +27,9 @@ pub(crate) fn player_attack(
 #[cfg(test)]
 mod tests {
 
-    use crate::{MyRng, actor::Actor, dungeon::DungeonMap, position::Position};
+    use crate::{
+        MyRng, actors::Actor, dungeon::DungeonMap, position::Position,
+    };
 
     use super::*;
 

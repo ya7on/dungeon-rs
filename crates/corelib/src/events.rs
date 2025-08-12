@@ -1,4 +1,4 @@
-use crate::{Direction, Position, actor::EntityId};
+use crate::{Direction, Position, actors::EntityId};
 
 /// All events in the game.
 pub enum GameEvent {
