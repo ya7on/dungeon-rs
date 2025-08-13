@@ -19,7 +19,7 @@ pub(crate) fn player_attack(
         return vec![GameEvent::PlayerAttackMissed];
     };
 
-    let damage = try_attack(&mut state.player, target);
+    let damage = try_attack(&mut state.player, target, &mut state.rng);
 
     vec![GameEvent::PlayerAttacked { target: target.id(), damage }]
 }

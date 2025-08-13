@@ -1,11 +1,14 @@
 use std::collections::VecDeque;
 
 use crate::{
-    actions::{PlayerAction, player_attack, player_move},
+    Stats,
+    actions::{PlayerAction, player_attack, player_equip_item, player_move},
     actors::Actor,
     ai::simple_ai,
+    catalog::ItemsCatalog,
     dungeon::DungeonMap,
     events::GameEvent,
+    items::{Hotbar, Inventory, ItemKind},
     rng::MyRng,
     walk_map::WalkMap,
 };
@@ -17,12 +20,18 @@ pub struct GameState {
     pub(crate) tick_id: u64,
     /// The player
     pub(crate) player: Actor,
+    /// The player's inventory.
+    pub(crate) inventory: Inventory,
+    /// The player's hotbar.
+    pub(crate) hotbar: Hotbar,
     /// Other entities in the game.
     pub(crate) entities: Vec<Actor>,
     /// The dungeon map.
     pub(crate) dungeon: DungeonMap,
     /// The random number generator.
     pub(crate) rng: MyRng,
+    /// Global items catalog.
+    pub(crate) items_catalog: ItemsCatalog,
 }
 
 impl GameState {
@@ -33,7 +42,16 @@ impl GameState {
         map: DungeonMap,
         rng: MyRng,
     ) -> Self {
-        GameState { tick_id: 0, player, entities, dungeon: map, rng }
+        GameState {
+            tick_id: 0,
+            player,
+            entities,
+            dungeon: map,
+            rng,
+            hotbar: Hotbar::empty(),
+            inventory: Inventory::empty(),
+            items_catalog: ItemsCatalog::new(),
+        }
     }
 
     /// Applies the given player action to the game state.
@@ -41,17 +59,9 @@ impl GameState {
         &mut self,
         action: &PlayerAction,
     ) -> VecDeque<GameEvent> {
-        let mut walk_map = self
-            .dungeon
-            .iter()
-            .filter_map(|(position, tile)| {
-                (tile.is_walkable()).then_some(position)
-            })
-            .collect::<WalkMap>();
-        for entity in &self.entities {
-            walk_map.occupy(entity.position);
-        }
-        walk_map.occupy(self.player.position);
+        let mut walk_map = self.recalculate_walk_map();
+        // TODO: add "dirty" flag, recalculate only after player action
+        self.player.stats = self.calculate_hotbar_stats();
 
         let mut events = VecDeque::new();
 
@@ -65,6 +75,9 @@ impl GameState {
             PlayerAction::Attack(direction) => {
                 events.extend(player_attack(self, *direction));
             },
+            PlayerAction::EquipItem { item_id, slot } => {
+                events.extend(player_equip_item(self, *item_id, *slot));
+            },
         }
 
         events.extend(simple_ai(self, &mut walk_map));
@@ -72,6 +85,49 @@ impl GameState {
         self.tick_id += 1;
 
         events
+    }
+
+    /// Recalculates the walk map based on the current dungeon and entities.
+    #[must_use]
+    fn recalculate_walk_map(&self) -> WalkMap {
+        let mut walk_map = self
+            .dungeon
+            .iter()
+            .filter_map(|(position, tile)| {
+                (tile.is_walkable()).then_some(position)
+            })
+            .collect::<WalkMap>();
+
+        for entity in &self.entities {
+            walk_map.occupy(entity.position);
+        }
+        walk_map.occupy(self.player.position);
+
+        walk_map
+    }
+
+    /// Calculates the stats for the player by iterating over the hotbar items and calculating their stats.
+    #[must_use]
+    fn calculate_hotbar_stats(&self) -> Stats {
+        let mut stats = self.player.kind.default_stats();
+        stats.hp = self.player.stats.hp;
+
+        for stack in self.hotbar.iter().flatten() {
+            let Some(item) = self.items_catalog.get(stack.item_id) else {
+                continue;
+            };
+            match item.kind {
+                ItemKind::Weapon { min_damage, max_damage } => {
+                    stats.min_damage += min_damage;
+                    stats.max_damage += max_damage;
+                },
+                ItemKind::Armor { defense } => {
+                    stats.defense += defense;
+                },
+            }
+        }
+
+        stats
     }
 
     /// Returns a reference to the player.

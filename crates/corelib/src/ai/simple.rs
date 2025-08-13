@@ -1,7 +1,9 @@
 use std::collections::VecDeque;
 
 use crate::{
-    Direction, GameState, events::GameEvent, mechanics::try_move,
+    Direction, GameState,
+    events::GameEvent,
+    mechanics::{try_attack, try_move},
     walk_map::WalkMap,
 };
 
@@ -23,10 +25,12 @@ pub(crate) fn simple_ai(
         let dist = relative.x().abs() + relative.y().abs();
 
         if dist == 1 {
-            let damage =
-                (entity.stats.attack - state.player.stats.defense).max(1);
-            state.player.stats.hp =
-                state.player.stats.hp.saturating_sub(damage);
+            let damage = try_attack(entity, &mut state.player, &mut state.rng);
+            events.push_back(GameEvent::EntityAttacked {
+                id: entity.id(),
+                target: state.player.position,
+                damage,
+            });
             continue;
         }
 

@@ -1,4 +1,8 @@
-use crate::{Direction, Position, actors::EntityId};
+use crate::{
+    Direction, Position,
+    actors::EntityId,
+    items::{ItemId, SlotId},
+};
 
 /// All events in the game.
 pub enum GameEvent {
@@ -15,6 +19,8 @@ pub enum GameEvent {
     PlayerAttacked { target: EntityId, damage: u32 },
     /// Player attack missed
     PlayerAttackMissed,
+    /// Player equipped item
+    PlayerEquippedItem { item_id: ItemId, slot: SlotId },
     /* --- Entity events --- */
     // /// Entity created
     // EntityCreated { id: EntityId, position: Position },
@@ -22,6 +28,6 @@ pub enum GameEvent {
     // EntityDied { id: EntityId },
     /// Entity moved
     EntityMoved { id: EntityId, from: Position, to: Position },
-    // /// Entity attacked
-    // EntityAttacked { id: EntityId, target: Position },
+    /// Entity attacked
+    EntityAttacked { id: EntityId, target: Position, damage: u32 },
 }
