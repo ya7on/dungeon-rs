@@ -4,7 +4,7 @@ const DEFAULT_INVENTORY_SIZE: usize = 36;
 
 /// Represents a player's inventory.
 #[derive(Debug)]
-pub(crate) struct Inventory {
+pub struct Inventory {
     slots: Vec<Option<ItemStack>>,
 }
 
@@ -24,13 +24,26 @@ impl Inventory {
     }
 
     pub(crate) fn take(&mut self, item_id: ItemId) -> Option<ItemStack> {
-        self.slots
-            .iter_mut()
-            .find_map(|slot| slot.take().filter(|item| item.item_id == item_id))
+        for item in &mut self.slots {
+            if let Some(stack) = item {
+                if stack.item_id == item_id {
+                    return item.take();
+                }
+            }
+        }
+        None
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Option<ItemStack>> {
+        self.slots.iter()
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl IntoIterator for Inventory {
+    type Item = Option<ItemStack>;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.slots.into_iter()
+    }
 }

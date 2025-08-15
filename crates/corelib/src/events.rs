@@ -12,22 +12,61 @@ pub enum GameEvent {
     /// Player died event
     PlayerDied,
     /// Player moved
-    PlayerMoved { from: Position, to: Position },
+    PlayerMoved {
+        /// Player's previous position
+        from: Position,
+        /// Player's new position
+        to: Position,
+    },
     /// Player bumped into something
-    PlayerBumped { position: Position, direction: Direction },
+    PlayerBumped {
+        /// Player's position
+        position: Position,
+        /// Player's direction
+        direction: Direction,
+    },
     /// Player attacked
-    PlayerAttacked { target: EntityId, damage: u32 },
+    PlayerAttacked {
+        /// Player's target entity ID
+        target: EntityId,
+        /// Player's damage
+        damage: u32,
+    },
     /// Player attack missed
     PlayerAttackMissed,
     /// Player equipped item
-    PlayerEquippedItem { item_id: ItemId, slot: SlotId },
+    PlayerEquippedItem {
+        /// Item ID
+        item_id: ItemId,
+        /// Slot ID
+        slot: SlotId,
+    },
+    /// Player unequipped item
+    PlayerUnequippedItem {
+        /// Slot ID
+        slot: SlotId,
+    },
     /* --- Entity events --- */
     // /// Entity created
     // EntityCreated { id: EntityId, position: Position },
     // /// Entity died event
     // EntityDied { id: EntityId },
     /// Entity moved
-    EntityMoved { id: EntityId, from: Position, to: Position },
+    EntityMoved {
+        /// Entity ID
+        id: EntityId,
+        /// Entity's previous position
+        from: Position,
+        /// Entity's new position
+        to: Position,
+    },
     /// Entity attacked
-    EntityAttacked { id: EntityId, target: Position, damage: u32 },
+    EntityAttacked {
+        /// Entity ID
+        id: EntityId,
+        /// Entity's target position
+        target: Position,
+        /// Entity's damage
+        damage: u32,
+    },
 }

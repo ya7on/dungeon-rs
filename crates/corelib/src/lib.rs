@@ -29,9 +29,9 @@ pub use actors::{Actor, ActorKind, Stats};
 pub use array2d::Array2D;
 pub use direction::Direction;
 pub use dungeon::{DungeonMap, Tile};
+pub use events::GameEvent;
 pub use game_state::GameState;
 pub use position::Position;
-use rng::MyRng;
 
 /// Settings for the world generation.
 pub struct WorldSettings {
@@ -50,7 +50,7 @@ pub struct WorldSettings {
 /// Creates a new game instance.
 #[must_use]
 pub fn new_game(settings: &WorldSettings) -> GameState {
-    let mut rng = MyRng::from_seed(settings.seed);
+    let mut rng = rng::MyRng::from_seed(settings.seed);
 
     let map = dungeon::DungeonMap::generate(
         settings.map_width,

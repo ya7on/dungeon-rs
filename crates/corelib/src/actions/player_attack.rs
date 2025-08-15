@@ -28,7 +28,7 @@ pub(crate) fn player_attack(
 mod tests {
 
     use crate::{
-        MyRng, actors::Actor, dungeon::DungeonMap, position::Position,
+        actors::Actor, dungeon::DungeonMap, position::Position, rng::MyRng,
     };
 
     use super::*;

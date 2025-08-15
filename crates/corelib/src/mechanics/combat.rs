@@ -1,4 +1,4 @@
-use crate::{Actor, MyRng};
+use crate::{Actor, rng::MyRng};
 
 pub(crate) fn try_attack(
     attacker: &mut Actor,

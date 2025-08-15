@@ -2,7 +2,10 @@ use std::collections::VecDeque;
 
 use crate::{
     Stats,
-    actions::{PlayerAction, player_attack, player_equip_item, player_move},
+    actions::{
+        PlayerAction, player_attack, player_equip_item, player_move,
+        player_unequip_item,
+    },
     actors::Actor,
     ai::simple_ai,
     catalog::ItemsCatalog,
@@ -78,6 +81,9 @@ impl GameState {
             PlayerAction::EquipItem { item_id, slot } => {
                 events.extend(player_equip_item(self, *item_id, *slot));
             },
+            PlayerAction::UnequipItem { slot } => {
+                events.extend(player_unequip_item(self, *slot));
+            },
         }
 
         events.extend(simple_ai(self, &mut walk_map));
@@ -146,6 +152,24 @@ impl GameState {
     #[must_use]
     pub fn dungeon(&self) -> &DungeonMap {
         &self.dungeon
+    }
+
+    /// Returns a reference to the items catalog.
+    #[must_use]
+    pub fn items_catalog(&self) -> &ItemsCatalog {
+        &self.items_catalog
+    }
+
+    /// Returns a reference to the hotbar.
+    #[must_use]
+    pub fn hotbar(&self) -> &Hotbar {
+        &self.hotbar
+    }
+
+    /// Returns a reference to the inventory.
+    #[must_use]
+    pub fn inventory(&self) -> &Inventory {
+        &self.inventory
     }
 }
 

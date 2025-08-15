@@ -2,7 +2,7 @@ use super::{MAX_HOTBAR_SIZE, SlotId, item_stack::ItemStack};
 
 /// Represents a hotbar in the game.
 #[derive(Debug)]
-pub(crate) struct Hotbar {
+pub struct Hotbar {
     items: Box<[Option<ItemStack>; MAX_HOTBAR_SIZE]>,
 }
 
@@ -11,8 +11,19 @@ impl Hotbar {
         Self { items: Box::new(std::array::from_fn(|_| None)) }
     }
 
-    pub(crate) fn iter(&self) -> impl Iterator<Item = &Option<ItemStack>> {
+    pub fn iter(&self) -> impl Iterator<Item = &Option<ItemStack>> {
         self.items.iter()
+    }
+
+    pub fn empty_slot(&self) -> Option<SlotId> {
+        self.items
+            .iter()
+            .position(|slot| slot.is_none())
+            .map(|pos| pos as SlotId)
+    }
+
+    pub(crate) fn take(&mut self, slot: SlotId) -> Option<ItemStack> {
+        if slot < MAX_HOTBAR_SIZE { self.items[slot].take() } else { None }
     }
 
     pub(crate) fn contains(&self, slot: SlotId) -> bool {
