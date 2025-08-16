@@ -1,6 +1,7 @@
 use crate::{
     Direction, Position,
     actors::EntityId,
+    effects::EffectId,
     items::{ItemId, SlotId},
 };
 
@@ -68,5 +69,19 @@ pub enum GameEvent {
         target: Position,
         /// Entity's damage
         damage: u32,
+    },
+    /// Entity effect ticked
+    EffectTick {
+        /// Entity ID
+        entity_id: EntityId,
+        /// Effect ID
+        effect_id: EffectId,
+    },
+    /// Effect expired for entity
+    EffectExpired {
+        /// Entity ID
+        entity_id: EntityId,
+        /// Effect ID
+        effect_id: EffectId,
     },
 }

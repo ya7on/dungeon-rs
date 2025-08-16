@@ -1,6 +1,6 @@
 use std::sync::atomic::{AtomicU32, Ordering};
 
-use crate::position::Position;
+use crate::{catalog::EffectInstance, position::Position};
 
 use super::{ActorKind, stats::Stats};
 
@@ -42,6 +42,8 @@ pub struct Actor {
     pub(crate) kind: ActorKind,
     /// The stats of the actor.
     pub(crate) stats: Stats,
+    /// The effects currently affecting the actor.
+    pub(crate) effects: Vec<EffectInstance>,
 }
 
 impl Actor {
@@ -52,6 +54,7 @@ impl Actor {
             position,
             stats: kind.default_stats(),
             kind,
+            effects: Vec::new(),
         }
     }
 
@@ -76,6 +79,12 @@ impl Actor {
     #[must_use]
     pub fn stats(&self) -> &Stats {
         &self.stats
+    }
+
+    /// Returns the effects currently affecting the actor.
+    #[must_use]
+    pub(crate) fn effects(&self) -> &Vec<EffectInstance> {
+        &self.effects
     }
 
     /// Returns true if the actor is alive.

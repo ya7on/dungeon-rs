@@ -16,6 +16,7 @@ mod array2d;
 mod catalog;
 mod direction;
 mod dungeon;
+mod effects;
 mod events;
 mod game_state;
 mod items;

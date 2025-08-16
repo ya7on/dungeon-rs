@@ -8,8 +8,9 @@ use crate::{
     },
     actors::Actor,
     ai::simple_ai,
-    catalog::ItemsCatalog,
+    catalog::{EffectsCatalog, ItemsCatalog},
     dungeon::DungeonMap,
+    effects::EffectKind,
     events::GameEvent,
     items::{Hotbar, Inventory, ItemKind},
     rng::MyRng,
@@ -35,6 +36,8 @@ pub struct GameState {
     pub(crate) rng: MyRng,
     /// Global items catalog.
     pub(crate) items_catalog: ItemsCatalog,
+    /// Global effects catalog.
+    pub(crate) effects_catalog: EffectsCatalog,
 }
 
 impl GameState {
@@ -54,6 +57,7 @@ impl GameState {
             hotbar: Hotbar::empty(),
             inventory: Inventory::empty(),
             items_catalog: ItemsCatalog::new(),
+            effects_catalog: EffectsCatalog::new(),
         }
     }
 
@@ -67,6 +71,11 @@ impl GameState {
         self.player.stats = self.calculate_hotbar_stats();
 
         let mut events = VecDeque::new();
+
+        events.extend(Self::tick_effects(
+            &self.effects_catalog,
+            &mut self.player,
+        ));
 
         match action {
             PlayerAction::Skip => {
@@ -134,6 +143,45 @@ impl GameState {
         }
 
         stats
+    }
+
+    /// Ticks the effects of an entity.
+    fn tick_effects(
+        effects_catalog: &EffectsCatalog,
+        entity: &mut Actor,
+    ) -> VecDeque<GameEvent> {
+        let mut events = VecDeque::new();
+        entity.effects.retain_mut(|effect| {
+            if effect.remaining_turns == 0 {
+                events.push_back(GameEvent::EffectExpired {
+                    entity_id: entity.id,
+                    effect_id: effect.effect_id,
+                });
+                return false;
+            }
+            effect.remaining_turns = effect.remaining_turns.saturating_sub(1);
+
+            let Some(effect_def) = effects_catalog.get(effect.effect_id) else {
+                // Unknown effect, remove it
+                events.push_back(GameEvent::EffectExpired {
+                    entity_id: entity.id,
+                    effect_id: effect.effect_id,
+                });
+                return false;
+            };
+            match effect_def.kind {
+                EffectKind::Heal { hp_per_turn } => {
+                    entity.stats.hp += hp_per_turn;
+                },
+            }
+            events.push_back(GameEvent::EffectTick {
+                entity_id: entity.id,
+                effect_id: effect.effect_id,
+            });
+
+            true
+        });
+        events
     }
 
     /// Returns a reference to the player.

@@ -55,6 +55,16 @@ impl Widget for EventLogWidget<'_> {
                         "Entity({:?}) attacked with {damage} damage.\n",
                         id
                     )),
+                GameEvent::EffectTick { entity_id, effect_id: _ } => log
+                    .push_str(&format!(
+                        "Entity({:?}) effect ticked.\n",
+                        entity_id
+                    )),
+                GameEvent::EffectExpired { entity_id, effect_id: _ } => log
+                    .push_str(&format!(
+                        "Entity({:?}) effect expired.\n",
+                        entity_id
+                    )),
             }
         }
 
