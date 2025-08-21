@@ -1,0 +1,13 @@
+[package]
+name = "transport"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["local"]
+local = ["dep:corelib"]
+
+[dependencies]
+async-trait = "0.1.89"
+corelib = { version = "0.1.0", path = "../corelib", optional = true }
+protocol = { version = "0.1.0", path = "../protocol" }

@@ -17,6 +17,12 @@ use crate::{
     walk_map::WalkMap,
 };
 
+/// Represents the result of a game step.
+pub struct StepResult {
+    /// The events that occurred during the step.
+    pub events: VecDeque<GameEvent>,
+}
+
 /// Represents the state of the game.
 #[derive(Debug)]
 pub struct GameState {
@@ -62,10 +68,7 @@ impl GameState {
     }
 
     /// Applies the given player action to the game state.
-    pub fn apply_player_action(
-        &mut self,
-        action: &PlayerAction,
-    ) -> VecDeque<GameEvent> {
+    pub fn apply_player_action(&mut self, action: &PlayerAction) -> StepResult {
         let mut walk_map = self.recalculate_walk_map();
         // TODO: add "dirty" flag, recalculate only after player action
         self.player.stats = self.calculate_hotbar_stats();
@@ -99,7 +102,7 @@ impl GameState {
 
         self.tick_id += 1;
 
-        events
+        StepResult { events }
     }
 
     /// Recalculates the walk map based on the current dungeon and entities.

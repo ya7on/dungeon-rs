@@ -11,7 +11,13 @@ pub struct Inventory {
 impl Inventory {
     /// Creates an empty inventory.
     pub(crate) fn empty() -> Self {
-        Self { slots: Vec::with_capacity(DEFAULT_INVENTORY_SIZE) }
+        // TODO: Fixme
+        let mut slots = Vec::with_capacity(DEFAULT_INVENTORY_SIZE);
+        slots.push(Some(ItemStack { item_id: 0, count: 1 }));
+        slots.push(Some(ItemStack { item_id: 1, count: 1 }));
+        slots.push(Some(ItemStack { item_id: 2, count: 1 }));
+
+        Self { slots }
     }
 
     pub(crate) fn add(&mut self, item: ItemStack) {

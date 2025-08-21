@@ -1,4 +1,9 @@
 [workspace]
 resolver = "3"
 
-members = ["crates/corelib", "crates/cli"]
+members = [
+    "crates/corelib",
+    "crates/cli",
+    "crates/protocol",
+    "crates/transport",
+]

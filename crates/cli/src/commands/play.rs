@@ -39,9 +39,9 @@ pub(crate) fn play(
                 },
                 KeyCode::Char(' ') => {
                     if tui.mode() == &Mode::Game {
-                        tui.set_event_log(
-                            game.apply_player_action(&PlayerAction::Skip),
-                        );
+                        let result =
+                            game.apply_player_action(&PlayerAction::Skip);
+                        tui.set_event_log(result.events);
                     } else {
                         match tui.inventory_focus() {
                             InventoryFocus::Hotbar => {
@@ -49,11 +49,12 @@ pub(crate) fn play(
                                 let Some(selected) = state.selected() else {
                                     continue;
                                 };
-                                tui.set_event_log(game.apply_player_action(
+                                let result = game.apply_player_action(
                                     &PlayerAction::UnequipItem {
                                         slot: selected,
                                     },
-                                ));
+                                );
+                                tui.set_event_log(result.events);
                             },
                             InventoryFocus::Inventory => {
                                 let state = tui.inventory_state();
@@ -67,12 +68,13 @@ pub(crate) fn play(
                                     .collect::<Vec<_>>();
                                 let item = inventory_items[selected];
                                 let slot = game.hotbar().empty_slot().unwrap();
-                                tui.set_event_log(game.apply_player_action(
+                                let result = game.apply_player_action(
                                     &PlayerAction::EquipItem {
                                         slot,
                                         item_id: item.id(),
                                     },
-                                ));
+                                );
+                                tui.set_event_log(result.events);
                             },
                         }
                     }
@@ -82,59 +84,67 @@ pub(crate) fn play(
                 },
                 KeyCode::Char('w') => {
                     if tui.mode() == &Mode::Game {
-                        tui.set_event_log(game.apply_player_action(
+                        let result = game.apply_player_action(
                             &PlayerAction::Move(Direction::North),
-                        ));
+                        );
+                        tui.set_event_log(result.events);
                     } else {
                         tui.select_previous();
                     }
                 },
                 KeyCode::Char('s') => {
                     if tui.mode() == &Mode::Game {
-                        tui.set_event_log(game.apply_player_action(
+                        let result = game.apply_player_action(
                             &PlayerAction::Move(Direction::South),
-                        ));
+                        );
+                        tui.set_event_log(result.events);
                     } else {
                         tui.select_next();
                     }
                 },
                 KeyCode::Char('a') => {
                     if tui.mode() == &Mode::Game {
-                        tui.set_event_log(game.apply_player_action(
+                        let result = game.apply_player_action(
                             &PlayerAction::Move(Direction::West),
-                        ));
+                        );
+                        tui.set_event_log(result.events);
                     } else {
                         tui.toggle_inventory_focus();
                     }
                 },
                 KeyCode::Char('d') => {
                     if tui.mode() == &Mode::Game {
-                        tui.set_event_log(game.apply_player_action(
+                        let result = game.apply_player_action(
                             &PlayerAction::Move(Direction::East),
-                        ));
+                        );
+                        tui.set_event_log(result.events);
                     } else {
                         tui.toggle_inventory_focus();
                     }
                 },
                 KeyCode::Char('W') => {
-                    tui.set_event_log(game.apply_player_action(
+                    let result = game.apply_player_action(
                         &PlayerAction::Attack(Direction::North),
-                    ));
+                    );
+                    tui.set_event_log(result.events);
                 },
                 KeyCode::Char('S') => {
-                    tui.set_event_log(game.apply_player_action(
+                    let result = game.apply_player_action(
                         &PlayerAction::Attack(Direction::South),
-                    ));
+                    );
+                    tui.set_event_log(result.events);
                 },
                 KeyCode::Char('A') => {
-                    tui.set_event_log(game.apply_player_action(
+                    let result = game.apply_player_action(
                         &PlayerAction::Attack(Direction::West),
-                    ));
+                    );
+                    tui.set_event_log(result.events);
                 },
                 KeyCode::Char('D') => {
-                    tui.set_event_log(game.apply_player_action(
+                    let result = game.apply_player_action(
                         &PlayerAction::Attack(Direction::East),
-                    ));
+                    );
+                    tui.set_event_log(result.events);
                 },
                 _ => {},
             }
