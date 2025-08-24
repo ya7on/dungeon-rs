@@ -48,22 +48,19 @@ impl Widget for EventLogWidget<'_> {
                     &format!("Player unequipped an item from {slot} slot.\n"),
                 ),
                 GameEvent::EntityMoved { from: _, id, to: _ } => {
-                    log.push_str(&format!("Entity({:?}) moved.\n", id))
+                    log.push_str(&format!("Entity({id:?}) moved.\n",))
                 },
                 GameEvent::EntityAttacked { damage, id, target: _ } => log
                     .push_str(&format!(
-                        "Entity({:?}) attacked with {damage} damage.\n",
-                        id
+                        "Entity({id:?}) attacked with {damage} damage.\n",
                     )),
                 GameEvent::EffectTick { entity_id, effect_id: _ } => log
                     .push_str(&format!(
-                        "Entity({:?}) effect ticked.\n",
-                        entity_id
+                        "Entity({entity_id:?}) effect ticked.\n",
                     )),
                 GameEvent::EffectExpired { entity_id, effect_id: _ } => log
                     .push_str(&format!(
-                        "Entity({:?}) effect expired.\n",
-                        entity_id
+                        "Entity({entity_id:?}) effect expired.\n",
                     )),
             }
         }

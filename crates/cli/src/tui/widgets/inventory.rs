@@ -24,28 +24,26 @@ impl StatefulWidget for InventoryWidget<'_> {
 
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         let mut rows = vec![];
-        for item in self.state.inventory().iter() {
-            if let Some(item) = item {
-                let item_name = self
-                    .state
-                    .items_catalog()
-                    .get(item.id())
-                    .map(|item| item.title())
-                    .unwrap_or("Unknown item")
-                    .to_string();
-                let item_description = self
-                    .state
-                    .items_catalog()
-                    .get(item.id())
-                    .map(|item| item.description())
-                    .unwrap_or("No description available")
-                    .to_string();
-                rows.push(Row::new(vec![
-                    format!("{}", item.id()),
-                    item_name,
-                    item_description,
-                ]));
-            }
+        for item in self.state.inventory().iter().flatten() {
+            let item_name = self
+                .state
+                .items_catalog()
+                .get(item.id())
+                .map(|item| item.title())
+                .unwrap_or("Unknown item")
+                .to_string();
+            let item_description = self
+                .state
+                .items_catalog()
+                .get(item.id())
+                .map(|item| item.description())
+                .unwrap_or("No description available")
+                .to_string();
+            rows.push(Row::new(vec![
+                format!("{}", item.id()),
+                item_name,
+                item_description,
+            ]));
         }
 
         if rows.is_empty() {

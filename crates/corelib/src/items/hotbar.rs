@@ -16,10 +16,7 @@ impl Hotbar {
     }
 
     pub fn empty_slot(&self) -> Option<SlotId> {
-        self.items
-            .iter()
-            .position(|slot| slot.is_none())
-            .map(|pos| pos as SlotId)
+        self.items.iter().position(Option::is_none).map(|pos| pos as SlotId)
     }
 
     pub(crate) fn take(&mut self, slot: SlotId) -> Option<ItemStack> {

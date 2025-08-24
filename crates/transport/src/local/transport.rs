@@ -20,7 +20,7 @@ impl<'a> LocalTransport<'a> {
 }
 
 #[async_trait]
-impl<'a> Transport for LocalTransport<'a> {
+impl Transport for LocalTransport<'_> {
     async fn apply_step(
         &mut self,
         action: PlayerAction,
@@ -30,7 +30,7 @@ impl<'a> Transport for LocalTransport<'a> {
             events: result
                 .events
                 .into_iter()
-                .map(|event| protocol::GameEvent::from_corelib(event))
+                .map(protocol::GameEvent::from_corelib)
                 .collect(),
         })
     }
