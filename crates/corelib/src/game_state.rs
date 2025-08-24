@@ -227,7 +227,7 @@ impl GameState {
 #[cfg(test)]
 mod tests {
 
-    use crate::position::Position;
+    use crate::{position::Position, ActorKind, Direction};
 
     use super::*;
 
@@ -243,5 +243,57 @@ mod tests {
         gs.apply_player_action(&PlayerAction::Skip);
 
         assert_eq!(gs.tick_id, 1);
+    }
+
+    #[test]
+    fn player_event_before_npc_event() {
+        let mut gs = GameState::new(
+            Actor::create_player(Position::new(0, 0)),
+            vec![Actor::create(Position::new(3, 0), ActorKind::Enemy)],
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
+        );
+        let result = gs.apply_player_action(&PlayerAction::Move(Direction::East));
+        let events: Vec<_> = result.events.into_iter().collect();
+        assert!(matches!(events[0], GameEvent::PlayerMoved { .. }));
+        assert!(matches!(events[1], GameEvent::EntityMoved { .. }));
+    }
+
+    #[test]
+    fn determinism_same_seed_and_actions() {
+        let seed = [4; 32];
+        let mut gs1 = GameState::new(
+            Actor::create_player(Position::new(0, 0)),
+            vec![Actor::create(Position::new(1, 0), ActorKind::Enemy)],
+            DungeonMap::simple(5, 5),
+            MyRng::from_seed(seed),
+        );
+        let mut gs2 = GameState::new(
+            Actor::create_player(Position::new(0, 0)),
+            vec![Actor::create(Position::new(1, 0), ActorKind::Enemy)],
+            DungeonMap::simple(5, 5),
+            MyRng::from_seed(seed),
+        );
+        for _ in 0..2 {
+            let r1 = gs1.apply_player_action(&PlayerAction::Skip);
+            let r2 = gs2.apply_player_action(&PlayerAction::Skip);
+            let e1: Vec<_> = r1.events.into_iter().collect();
+            let e2: Vec<_> = r2.events.into_iter().collect();
+            assert_eq!(e1.len(), e2.len());
+            for (a, b) in e1.iter().zip(e2.iter()) {
+                assert_eq!(std::mem::discriminant(a), std::mem::discriminant(b));
+                match (a, b) {
+                    (
+                        GameEvent::EntityAttacked { target: t1, damage: d1, .. },
+                        GameEvent::EntityAttacked { target: t2, damage: d2, .. },
+                    ) => {
+                        assert_eq!(t1, t2);
+                        assert_eq!(d1, d2);
+                    },
+                    _ => {},
+                }
+            }
+            assert_eq!(gs1.player.stats.hp, gs2.player.stats.hp);
+        }
     }
 }

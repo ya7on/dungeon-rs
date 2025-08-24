@@ -57,3 +57,88 @@ pub(crate) fn simple_ai(
 
     events
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        actions::PlayerAction,
+        actors::{Actor, ActorKind},
+        dungeon::DungeonMap,
+        position::Position,
+        rng::MyRng,
+    };
+
+    fn setup_state(player_pos: Position, enemies: Vec<Position>) -> GameState {
+        GameState::new(
+            Actor::create_player(player_pos),
+            enemies
+                .into_iter()
+                .map(|p| Actor::create(p, ActorKind::Enemy))
+                .collect(),
+            DungeonMap::simple(10, 10),
+            MyRng::new(),
+        )
+    }
+
+    #[test]
+    fn enemy_moves_towards_player() {
+        let mut gs = setup_state(Position::new(0, 0), vec![Position::new(2, 0)]);
+        let result = gs.apply_player_action(&PlayerAction::Skip);
+        let events: Vec<_> = result.events.into_iter().collect();
+        match events[1] {
+            GameEvent::EntityMoved { from, to, .. } => {
+                assert_eq!(from, Position::new(2, 0));
+                assert_eq!(to, Position::new(1, 0));
+            },
+            _ => panic!("expected entity movement"),
+        }
+    }
+
+    #[test]
+    fn enemy_attacks_when_adjacent() {
+        let mut gs = setup_state(Position::new(0, 0), vec![Position::new(1, 0)]);
+        let hp_before = gs.player.stats.hp;
+        let result = gs.apply_player_action(&PlayerAction::Skip);
+        assert!(result
+            .events
+            .iter()
+            .any(|e| matches!(e, GameEvent::EntityAttacked { target, .. } if *target == Position::new(0,0))));
+        assert!(gs.player.stats.hp < hp_before);
+    }
+
+    #[test]
+    fn enemies_act_in_entity_id_order() {
+        let mut gs = setup_state(
+            Position::new(0, 0),
+            vec![Position::new(2, 0), Position::new(0, 2)],
+        );
+        let result = gs.apply_player_action(&PlayerAction::Skip);
+        let events: Vec<_> = result.events.into_iter().collect();
+        match events[1] {
+            GameEvent::EntityMoved { id, .. } => {
+                assert_eq!(id, gs.entities[0].id());
+            },
+            _ => panic!("expected first entity event"),
+        }
+        match events[2] {
+            GameEvent::EntityMoved { id, .. } => {
+                assert_eq!(id, gs.entities[1].id());
+            },
+            _ => panic!("expected second entity event"),
+        }
+    }
+
+    #[test]
+    fn enemy_blocked_by_other_entity() {
+        let mut gs = setup_state(
+            Position::new(0, 0),
+            vec![Position::new(2, 0), Position::new(1, 0)],
+        );
+        let before = gs.entities[0].position;
+        let result = gs.apply_player_action(&PlayerAction::Skip);
+        let events: Vec<_> = result.events.into_iter().collect();
+        assert!(events.iter().any(|e| matches!(e, GameEvent::EntityAttacked { .. })));
+        assert_eq!(gs.entities[0].position, before);
+    }
+}

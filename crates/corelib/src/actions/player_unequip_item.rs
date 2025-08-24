@@ -17,3 +17,47 @@ pub(crate) fn player_unequip_item(
 
     vec![GameEvent::PlayerUnequippedItem { slot }]
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        actions::player_equip_item,
+        actors::Actor,
+        dungeon::DungeonMap,
+        position::Position,
+        rng::MyRng,
+    };
+
+    fn setup_state() -> GameState {
+        GameState::new(
+            Actor::create_player(Position::new(0, 0)),
+            vec![],
+            DungeonMap::simple(5, 5),
+            MyRng::new(),
+        )
+    }
+
+    #[test]
+    fn unequip_moves_item_back_to_inventory() {
+        let mut gs = setup_state();
+        player_equip_item(&mut gs, 0, 0);
+        let events = player_unequip_item(&mut gs, 0);
+        assert!(matches!(
+            events.as_slice(),
+            [GameEvent::PlayerUnequippedItem { slot: 0 }]
+        ));
+        assert!(!gs.hotbar.contains(0));
+        assert!(gs
+            .inventory
+            .iter()
+            .any(|slot| slot.as_ref().map_or(false, |s| s.id() == 0)));
+    }
+
+    #[test]
+    fn cannot_unequip_empty_slot() {
+        let mut gs = setup_state();
+        let events = player_unequip_item(&mut gs, 0);
+        assert!(events.is_empty());
+    }
+}
