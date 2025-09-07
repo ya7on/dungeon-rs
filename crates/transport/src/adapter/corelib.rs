@@ -38,3 +38,9 @@ impl FromCorelib<corelib::GameEvent> for protocol::GameEvent {
         }
     }
 }
+
+impl FromCorelib<corelib::Position> for protocol::Position {
+    fn from_corelib(from: corelib::Position) -> Self {
+        Self { x: from.x, y: from.y }
+    }
+}

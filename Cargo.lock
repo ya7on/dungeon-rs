@@ -560,6 +560,11 @@ name = "backend"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "engine",
+ "lru 0.16.0",
+ "protocol",
+ "serde",
+ "uuid",
 ]
 
 [[package]]
@@ -2503,6 +2508,10 @@ dependencies = [
 [[package]]
 name = "engine"
 version = "0.1.0"
+dependencies = [
+ "protocol",
+ "transport",
+]
 
 [[package]]
 name = "equivalent"
@@ -3535,6 +3544,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lru"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86ea4e65087ff52f3862caff188d489f1fab49a0cb09e01b2e3f1a617b10aaed"
+dependencies = [
+ "hashbrown",
+]
+
+[[package]]
 name = "mach2"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4357,6 +4375,9 @@ checksum = "3eb8486b569e12e2c32ad3e204dbaba5e4b5b216e9367044f25f1dba42341773"
 [[package]]
 name = "protocol"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "quote"
@@ -4473,7 +4494,7 @@ dependencies = [
  "indoc",
  "instability",
  "itertools 0.13.0",
- "lru",
+ "lru 0.12.5",
  "paste",
  "strum",
  "unicode-segmentation",

@@ -1,31 +1,48 @@
+use std::sync::{Arc, Mutex};
+
 use async_trait::async_trait;
 use corelib::GameState;
-use protocol::{PlayerAction, StepResult};
+use protocol::{PlayerAction, State, StepResult};
+
+/// Local implementation of GameState.
+pub type LocalState = GameState;
 
 use crate::{
-    Transport, TransportResult,
+    Transport, TransportError, TransportResult,
     adapter::corelib::{FromCorelib, ToCorelib},
 };
 
 /// Local implementation of Transport.
-pub struct LocalTransport<'a> {
-    state: &'a mut GameState,
+pub struct LocalTransport {
+    state: Arc<Mutex<LocalState>>,
 }
 
-impl<'a> LocalTransport<'a> {
+impl LocalTransport {
     /// Build a new instance of local transport.
-    pub fn new(state: &'a mut GameState) -> Self {
+    pub fn new(state: Arc<Mutex<LocalState>>) -> Self {
         Self { state }
+    }
+
+    pub fn new_state() -> corelib::GameState {
+        corelib::new_game(&corelib::WorldSettings {
+            seed: [0; 32],
+            map_width: 1024,
+            map_height: 1024,
+            floor_tiles: 100,
+            enemies: 10,
+        })
     }
 }
 
 #[async_trait]
-impl Transport for LocalTransport<'_> {
+impl Transport for LocalTransport {
     async fn apply_step(
         &mut self,
         action: PlayerAction,
     ) -> TransportResult<StepResult> {
-        let result = self.state.apply_player_action(&action.to_corelib());
+        let mut guard =
+            self.state.lock().map_err(|_| TransportError::LockError)?;
+        let result = guard.apply_player_action(&action.to_corelib());
         Ok(StepResult {
             events: result
                 .events
@@ -33,5 +50,13 @@ impl Transport for LocalTransport<'_> {
                 .map(protocol::GameEvent::from_corelib)
                 .collect(),
         })
+    }
+
+    /// Get the current game state.
+    fn state(&self) -> State {
+        let guard = self.state.lock().unwrap();
+        State {
+            player: protocol::Position::from_corelib(guard.player().position()),
+        }
     }
 }

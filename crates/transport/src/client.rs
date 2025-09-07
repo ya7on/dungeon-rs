@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use protocol::{PlayerAction, StepResult};
+use protocol::{PlayerAction, State, StepResult};
 
 use crate::TransportResult;
 
@@ -11,4 +11,7 @@ pub trait Transport {
         &mut self,
         action: PlayerAction,
     ) -> TransportResult<StepResult>;
+
+    /// Get the current game state.
+    fn state(&self) -> State;
 }

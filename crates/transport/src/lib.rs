@@ -18,4 +18,4 @@ mod local;
 pub use client::Transport;
 pub use error::{TransportError, TransportResult};
 #[cfg(feature = "local")]
-pub use local::transport::LocalTransport;
+pub use local::transport::{LocalState, LocalTransport};

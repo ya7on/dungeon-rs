@@ -13,9 +13,13 @@
 mod actions;
 mod directions;
 mod event;
+mod position;
+mod state;
 mod step;
 
 pub use actions::PlayerAction;
 pub use directions::Direction;
 pub use event::GameEvent;
+pub use position::Position;
+pub use state::State;
 pub use step::StepResult;

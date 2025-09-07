@@ -9,8 +9,44 @@
 
 //! This module contains the engine for the dungeon game.
 
-/// This struct represents the engine for the dungeon game.
-pub struct Engine;
+use std::sync::{Arc, Mutex};
 
-/// This struct represents the game session for the dungeon game.
-pub struct GameSession;
+use protocol::{PlayerAction, State, StepResult};
+use transport::{LocalState, Transport, TransportError};
+
+pub use transport::LocalTransport;
+
+/// This type represents the engine for the dungeon game.
+pub type LocalEngine = Engine<LocalTransport>;
+
+/// This struct represents the engine for the dungeon game.
+pub struct Engine<T: Transport> {
+    transport: T,
+}
+
+impl Engine<LocalTransport> {
+    /// Creates a new instance of the corelib.
+    pub fn new_state() -> LocalState {
+        LocalTransport::new_state()
+    }
+
+    /// Creates a new instance of the engine.
+    pub fn new_local_game(state: Arc<Mutex<LocalState>>) -> Self {
+        Self { transport: LocalTransport::new(state) }
+    }
+}
+
+impl<T: Transport> Engine<T> {
+    /// Applies a player action to the game state.
+    pub async fn apply_step(
+        &mut self,
+        action: PlayerAction,
+    ) -> Result<StepResult, TransportError> {
+        self.transport.apply_step(action).await
+    }
+
+    /// Returns the current state of the game.
+    pub fn state(&self) -> State {
+        self.transport.state()
+    }
+}
