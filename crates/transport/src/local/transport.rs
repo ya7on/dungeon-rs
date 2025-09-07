@@ -19,10 +19,13 @@ pub struct LocalTransport {
 
 impl LocalTransport {
     /// Build a new instance of local transport.
+    #[must_use]
     pub fn new(state: Arc<Mutex<LocalState>>) -> Self {
         Self { state }
     }
 
+    /// Create a new game state.
+    #[must_use]
     pub fn new_state() -> corelib::GameState {
         corelib::new_game(&corelib::WorldSettings {
             seed: [0; 32],

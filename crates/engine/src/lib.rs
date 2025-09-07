@@ -26,11 +26,13 @@ pub struct Engine<T: Transport> {
 
 impl Engine<LocalTransport> {
     /// Creates a new instance of the corelib.
+    #[must_use]
     pub fn new_state() -> LocalState {
         LocalTransport::new_state()
     }
 
     /// Creates a new instance of the engine.
+    #[must_use]
     pub fn new_local_game(state: Arc<Mutex<LocalState>>) -> Self {
         Self { transport: LocalTransport::new(state) }
     }
