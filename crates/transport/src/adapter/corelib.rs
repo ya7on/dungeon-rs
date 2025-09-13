@@ -34,7 +34,48 @@ pub trait FromCorelib<T> {
 impl FromCorelib<corelib::GameEvent> for protocol::GameEvent {
     fn from_corelib(from: corelib::GameEvent) -> Self {
         match from {
-            _ => unimplemented!(),
+            corelib::GameEvent::PlayerSkippedMove => Self::PlayerSkippedMove,
+            corelib::GameEvent::PlayerDied => Self::PlayerDied,
+            corelib::GameEvent::PlayerMoved { from, to } => Self::PlayerMoved {
+                from: protocol::Position::from_corelib(from),
+                to: protocol::Position::from_corelib(to),
+            },
+            corelib::GameEvent::PlayerBumped { position, direction } => {
+                Self::PlayerBumped {
+                    position: protocol::Position::from_corelib(position),
+                    direction: protocol::Direction::from_corelib(direction),
+                }
+            },
+            corelib::GameEvent::PlayerAttacked { target, damage } => {
+                Self::PlayerAttacked { target: target.into(), damage }
+            },
+            corelib::GameEvent::PlayerAttackMissed => Self::PlayerAttackMissed,
+            corelib::GameEvent::PlayerEquippedItem { item_id, slot } => {
+                Self::PlayerEquippedItem { item_id, slot }
+            },
+            corelib::GameEvent::PlayerUnequippedItem { slot } => {
+                Self::PlayerUnequippedItem { slot }
+            },
+            corelib::GameEvent::EntityMoved { id, from, to } => {
+                Self::EntityMoved {
+                    id: id.into(),
+                    from: protocol::Position::from_corelib(from),
+                    to: protocol::Position::from_corelib(to),
+                }
+            },
+            corelib::GameEvent::EntityAttacked { id, target, damage } => {
+                Self::EntityAttacked {
+                    id: id.into(),
+                    target: protocol::Position::from_corelib(target),
+                    damage,
+                }
+            },
+            corelib::GameEvent::EffectTick { entity_id, effect_id } => {
+                Self::EffectTick { entity_id: entity_id.into(), effect_id }
+            },
+            corelib::GameEvent::EffectExpired { entity_id, effect_id } => {
+                Self::EffectExpired { entity_id: entity_id.into(), effect_id }
+            },
         }
     }
 }
@@ -42,5 +83,16 @@ impl FromCorelib<corelib::GameEvent> for protocol::GameEvent {
 impl FromCorelib<corelib::Position> for protocol::Position {
     fn from_corelib(from: corelib::Position) -> Self {
         Self { x: from.x, y: from.y }
+    }
+}
+
+impl FromCorelib<corelib::Direction> for protocol::Direction {
+    fn from_corelib(from: corelib::Direction) -> Self {
+        match from {
+            corelib::Direction::North => Self::North,
+            corelib::Direction::South => Self::South,
+            corelib::Direction::East => Self::East,
+            corelib::Direction::West => Self::West,
+        }
     }
 }

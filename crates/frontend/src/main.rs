@@ -186,13 +186,47 @@ mod systems {
         turn_info.stage = TurnStage::NetworkStage { task };
     }
 
-    pub fn poll_turn_result(mut turn_info: ResMut<TurnInfo>) {
+    pub fn poll_turn_result(
+        mut turn_info: ResMut<TurnInfo>,
+        global_state: ResMut<GlobalState>,
+        mut player_query: Query<&mut Transform, (With<Player>, Without<Npc>)>,
+        mut npc_query: Query<(&mut Transform, &Npc), Without<Player>>,
+    ) {
         if let TurnStage::NetworkStage { task } = &mut turn_info.stage {
             let status = future::block_on(future::poll_once(task));
 
             if let Some(chunk_data) = status {
                 if let Ok(_step_result) = chunk_data {
-                    // TODO: handle step result
+                    // Update player and NPC positions after turn completion
+                    let state = global_state.state.lock().unwrap();
+
+                    // Update player position
+                    if let Ok(mut player_transform) = player_query.single_mut()
+                    {
+                        let player = state.player();
+                        let player_position = player.position();
+                        let player_screen_x = player_position.x as f32 * 96.0;
+                        let player_screen_y = player_position.y as f32 * 96.0;
+                        player_transform.translation =
+                            Vec3::new(player_screen_x, player_screen_y, 1.0);
+                    }
+
+                    // Update NPC positions
+                    for (mut npc_transform, npc_component) in
+                        npc_query.iter_mut()
+                    {
+                        if let Some(entity) = state
+                            .entities()
+                            .iter()
+                            .find(|e| e.id() == npc_component.entity_id.into())
+                        {
+                            let position = entity.position();
+                            let screen_x = position.x as f32 * 96.0;
+                            let screen_y = position.y as f32 * 96.0;
+                            npc_transform.translation =
+                                Vec3::new(screen_x, screen_y, 0.5);
+                        }
+                    }
                 }
                 turn_info.stage = TurnStage::PlayerStage;
             }
