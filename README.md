@@ -1,15 +1,23 @@
 # dungeon-rs
 
-A **turn-based dungeon crawler** (**first-person** in future) written in Rust.
-
-This project is in active development. For now, only a **terminal renderer** is available via CLI.
+A **turn-based dungeon crawler** written in Rust.
 
 ---
 
-## Run the game
+## Run the bevy frontend
 
 ```bash
-cargo run --bin cli -- play
+cargo run --release --bin frontend
+```
+
+### Controls
+
+- **WASD**: Move around the dungeon
+
+## Run the TUI
+
+```bash
+cargo run --release --bin cli -- play
 ```
 
 ### Controls
