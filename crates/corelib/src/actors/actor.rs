@@ -26,7 +26,7 @@ impl From<EntityId> for u32 {
 
 impl EntityId {
     /// Creates a new unique entity ID.
-    pub(crate) fn next_entity_id() -> Self {
+    pub fn next_entity_id() -> Self {
         EntityId(ENTITY_ID_COUNTER.fetch_add(1, Ordering::Relaxed))
     }
 }
@@ -65,7 +65,7 @@ impl Actor {
 
     /// Returns the unique identifier of the actor.
     #[must_use]
-    pub(crate) fn id(&self) -> EntityId {
+    pub fn id(&self) -> EntityId {
         self.id
     }
 

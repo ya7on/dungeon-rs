@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 bevy = "0.16.1"
+corelib = { version = "0.1.0", path = "../corelib" }
 engine = { version = "0.1.0", path = "../engine" }
 protocol = { version = "0.1.0", path = "../protocol" }
 transport = { version = "0.1.0", path = "../transport" }

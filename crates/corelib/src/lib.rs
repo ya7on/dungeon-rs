@@ -26,7 +26,7 @@ mod rng;
 mod walk_map;
 
 pub use actions::PlayerAction;
-pub use actors::{Actor, ActorKind, Stats};
+pub use actors::{Actor, ActorKind, EntityId, Stats};
 pub use array2d::Array2D;
 pub use direction::Direction;
 pub use dungeon::{DungeonMap, Tile};
