@@ -86,7 +86,7 @@ mod systems {
 
             for (position, tile) in state.dungeon().iter() {
                 let screen_x = position.x as f32 * 96.0;
-                let screen_y = position.y as f32 * 96.0;
+                let screen_y = position.y as f32 * -96.0;
 
                 let tile_index = match tile {
                     corelib::Tile::Floor => 3,
@@ -112,7 +112,7 @@ mod systems {
             let player = state.player();
             let player_position = player.position();
             let player_screen_x = player_position.x as f32 * 96.0;
-            let player_screen_y = player_position.y as f32 * 96.0;
+            let player_screen_y = player_position.y as f32 * -96.0;
 
             commands.spawn((
                 Sprite::from_atlas_image(
@@ -135,7 +135,7 @@ mod systems {
                 let position = entity.position();
 
                 let screen_x = position.x as f32 * 96.0;
-                let screen_y = position.y as f32 * 96.0;
+                let screen_y = position.y as f32 * -96.0;
 
                 commands.spawn((
                     Sprite::from_atlas_image(
@@ -206,7 +206,7 @@ mod systems {
                         let player = state.player();
                         let player_position = player.position();
                         let player_screen_x = player_position.x as f32 * 96.0;
-                        let player_screen_y = player_position.y as f32 * 96.0;
+                        let player_screen_y = player_position.y as f32 * -96.0;
                         player_transform.translation =
                             Vec3::new(player_screen_x, player_screen_y, 1.0);
                     }
@@ -222,7 +222,7 @@ mod systems {
                         {
                             let position = entity.position();
                             let screen_x = position.x as f32 * 96.0;
-                            let screen_y = position.y as f32 * 96.0;
+                            let screen_y = position.y as f32 * -96.0;
                             npc_transform.translation =
                                 Vec3::new(screen_x, screen_y, 0.5);
                         }
