@@ -9,7 +9,7 @@ static ENTITY_ID_COUNTER: AtomicU32 = AtomicU32::new(0);
 
 /// Represents the unique identifier of an entity.
 /// Uniqueness is guaranteed by the atomic counter.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct EntityId(u32);
 
 impl From<u32> for EntityId {

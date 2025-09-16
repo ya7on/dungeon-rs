@@ -1,9 +1,8 @@
-use std::collections::VecDeque;
-
 use crate::{
     Direction, GameState,
     events::GameEvent,
     mechanics::{try_attack, try_move},
+    step_result::StepContext,
     walk_map::WalkMap,
 };
 
@@ -12,10 +11,9 @@ use crate::{
 /// 2. Attacks the player if within range.
 pub(crate) fn simple_ai(
     state: &mut GameState,
+    step_context: &mut StepContext,
     walk_map: &mut WalkMap,
-) -> VecDeque<GameEvent> {
-    let mut events = VecDeque::new();
-
+) {
     for entity in &mut state.entities {
         if !entity.is_alive() {
             continue;
@@ -26,7 +24,7 @@ pub(crate) fn simple_ai(
 
         if dist == 1 {
             let damage = try_attack(entity, &mut state.player, &mut state.rng);
-            events.push_back(GameEvent::EntityAttacked {
+            step_context.add_event(GameEvent::EntityAttacked {
                 id: entity.id(),
                 target: state.player.position,
                 damage,
@@ -44,7 +42,7 @@ pub(crate) fn simple_ai(
             if condition {
                 if let Some((from, to)) = try_move(entity, direction, walk_map)
                 {
-                    events.push_back(GameEvent::EntityMoved {
+                    step_context.add_event(GameEvent::EntityMoved {
                         id: entity.id(),
                         from,
                         to,
@@ -54,8 +52,6 @@ pub(crate) fn simple_ai(
             }
         }
     }
-
-    events
 }
 
 #[cfg(test)]
@@ -83,7 +79,8 @@ mod tests {
 
     #[test]
     fn enemy_moves_towards_player() {
-        let mut gs = setup_state(Position::new(0, 0), vec![Position::new(2, 0)]);
+        let mut gs =
+            setup_state(Position::new(0, 0), vec![Position::new(2, 0)]);
         let result = gs.apply_player_action(&PlayerAction::Skip);
         let events: Vec<_> = result.events.into_iter().collect();
         match events[1] {
@@ -97,7 +94,8 @@ mod tests {
 
     #[test]
     fn enemy_attacks_when_adjacent() {
-        let mut gs = setup_state(Position::new(0, 0), vec![Position::new(1, 0)]);
+        let mut gs =
+            setup_state(Position::new(0, 0), vec![Position::new(1, 0)]);
         let hp_before = gs.player.stats.hp;
         let result = gs.apply_player_action(&PlayerAction::Skip);
         assert!(result
@@ -138,7 +136,11 @@ mod tests {
         let before = gs.entities[0].position;
         let result = gs.apply_player_action(&PlayerAction::Skip);
         let events: Vec<_> = result.events.into_iter().collect();
-        assert!(events.iter().any(|e| matches!(e, GameEvent::EntityAttacked { .. })));
+        assert!(
+            events
+                .iter()
+                .any(|e| matches!(e, GameEvent::EntityAttacked { .. }))
+        );
         assert_eq!(gs.entities[0].position, before);
     }
 }

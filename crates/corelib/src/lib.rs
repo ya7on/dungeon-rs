@@ -14,6 +14,7 @@ mod actors;
 mod ai;
 mod array2d;
 mod catalog;
+mod diff;
 mod direction;
 mod dungeon;
 mod effects;
@@ -23,6 +24,7 @@ mod items;
 mod mechanics;
 mod position;
 mod rng;
+mod step_result;
 mod walk_map;
 
 pub use actions::PlayerAction;

@@ -1,13 +1,14 @@
 use crate::{
     GameState, actors::ActorKind, direction::Direction, events::GameEvent,
-    mechanics::try_attack,
+    mechanics::try_attack, step_result::StepContext,
 };
 
 /// Attacks the enemy in the specified direction.
 pub(crate) fn player_attack(
     state: &mut GameState,
+    step_context: &mut StepContext,
     direction: Direction,
-) -> Vec<GameEvent> {
+) {
     let player_position = state.player.position();
     let target_position = player_position + direction.to_offset_position();
 
@@ -16,12 +17,14 @@ pub(crate) fn player_attack(
         .iter_mut()
         .find(|a| a.position == target_position && a.kind != ActorKind::Player)
     else {
-        return vec![GameEvent::PlayerAttackMissed];
+        step_context.add_event(GameEvent::PlayerAttackMissed);
+        return;
     };
 
     let damage = try_attack(&mut state.player, target, &mut state.rng);
 
-    vec![GameEvent::PlayerAttacked { target: target.id(), damage }]
+    step_context
+        .add_event(GameEvent::PlayerAttacked { target: target.id(), damage });
 }
 
 #[cfg(test)]

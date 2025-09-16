@@ -1,24 +1,28 @@
 use crate::{
     GameState, direction::Direction, events::GameEvent, mechanics::try_move,
-    walk_map::WalkMap,
+    step_result::StepContext, walk_map::WalkMap,
 };
 
 /// Moves the player in the specified direction.
 pub(crate) fn player_move(
     state: &mut GameState,
+    step_context: &mut StepContext,
     direction: Direction,
     walk_map: &mut WalkMap,
-) -> Vec<GameEvent> {
+) {
     if let Some((old_position, new_position)) =
         try_move(&mut state.player, direction, walk_map)
     {
-        vec![GameEvent::PlayerMoved { from: old_position, to: new_position }]
+        step_context.add_event(GameEvent::PlayerMoved {
+            from: old_position,
+            to: new_position,
+        });
     } else {
-        vec![GameEvent::PlayerBumped {
+        step_context.add_event(GameEvent::PlayerBumped {
             position: state.player.position,
             direction,
-        }]
-    }
+        });
+    };
 }
 
 #[cfg(test)]

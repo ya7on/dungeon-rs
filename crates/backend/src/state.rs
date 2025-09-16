@@ -1,7 +1,4 @@
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-};
+use std::collections::HashMap;
 
 use engine::LocalEngine;
 use uuid::Uuid;
@@ -11,10 +8,6 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn new() -> Self {
-        AppState { games: HashMap::new() }
-    }
-
     pub fn add_game(&mut self, id: Uuid, engine: LocalEngine) {
         self.games.insert(id, engine);
     }

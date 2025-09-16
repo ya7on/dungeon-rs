@@ -1,32 +1,32 @@
-use crate::{GameState, events::GameEvent, items::SlotId};
+use crate::{
+    GameState, events::GameEvent, items::SlotId, step_result::StepContext,
+};
 
 /// Moves the player in the specified direction.
 pub(crate) fn player_unequip_item(
     state: &mut GameState,
+    step_context: &mut StepContext,
     slot: SlotId,
-) -> Vec<GameEvent> {
+) {
     if !state.hotbar.contains(slot) {
-        return vec![];
+        return;
     }
 
     let Some(stack) = state.hotbar.take(slot) else {
-        return vec![];
+        return;
     };
 
     state.inventory.add(stack);
 
-    vec![GameEvent::PlayerUnequippedItem { slot }]
+    step_context.add_event(GameEvent::PlayerUnequippedItem { slot });
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
-        actions::player_equip_item,
-        actors::Actor,
-        dungeon::DungeonMap,
-        position::Position,
-        rng::MyRng,
+        actions::player_equip_item, actors::Actor, dungeon::DungeonMap,
+        position::Position, rng::MyRng,
     };
 
     fn setup_state() -> GameState {
@@ -48,10 +48,11 @@ mod tests {
             [GameEvent::PlayerUnequippedItem { slot: 0 }]
         ));
         assert!(!gs.hotbar.contains(0));
-        assert!(gs
-            .inventory
-            .iter()
-            .any(|slot| slot.as_ref().map_or(false, |s| s.id() == 0)));
+        assert!(
+            gs.inventory
+                .iter()
+                .any(|slot| slot.as_ref().map_or(false, |s| s.id() == 0))
+        );
     }
 
     #[test]

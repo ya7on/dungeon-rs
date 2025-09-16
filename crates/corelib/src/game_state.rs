@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use crate::{
     Stats,
     actions::{
@@ -14,14 +12,9 @@ use crate::{
     events::GameEvent,
     items::{Hotbar, Inventory, ItemKind},
     rng::MyRng,
+    step_result::{StepContext, StepResult},
     walk_map::WalkMap,
 };
-
-/// Represents the result of a game step.
-pub struct StepResult {
-    /// The events that occurred during the step.
-    pub events: VecDeque<GameEvent>,
-}
 
 /// Represents the state of the game.
 #[derive(Debug)]
@@ -73,36 +66,37 @@ impl GameState {
         // TODO: add "dirty" flag, recalculate only after player action
         self.player.stats = self.calculate_hotbar_stats();
 
-        let mut events = VecDeque::new();
+        let mut step_context = StepContext::default();
 
-        events.extend(Self::tick_effects(
+        Self::tick_effects(
+            &mut step_context,
             &self.effects_catalog,
             &mut self.player,
-        ));
+        );
 
         match action {
             PlayerAction::Skip => {
-                events.push_back(GameEvent::PlayerSkippedMove);
+                step_context.add_event(GameEvent::PlayerSkippedMove);
             },
             PlayerAction::Move(direction) => {
-                events.extend(player_move(self, *direction, &mut walk_map));
+                player_move(self, &mut step_context, *direction, &mut walk_map);
             },
             PlayerAction::Attack(direction) => {
-                events.extend(player_attack(self, *direction));
+                player_attack(self, &mut step_context, *direction);
             },
             PlayerAction::EquipItem { item_id, slot } => {
-                events.extend(player_equip_item(self, *item_id, *slot));
+                player_equip_item(self, &mut step_context, *item_id, *slot);
             },
             PlayerAction::UnequipItem { slot } => {
-                events.extend(player_unequip_item(self, *slot));
+                player_unequip_item(self, &mut step_context, *slot);
             },
         }
 
-        events.extend(simple_ai(self, &mut walk_map));
+        simple_ai(self, &mut step_context, &mut walk_map);
 
         self.tick_id += 1;
 
-        StepResult { events }
+        step_context.build()
     }
 
     /// Recalculates the walk map based on the current dungeon and entities.
@@ -150,13 +144,13 @@ impl GameState {
 
     /// Ticks the effects of an entity.
     fn tick_effects(
+        step_context: &mut StepContext,
         effects_catalog: &EffectsCatalog,
         entity: &mut Actor,
-    ) -> VecDeque<GameEvent> {
-        let mut events = VecDeque::new();
+    ) {
         entity.effects.retain_mut(|effect| {
             if effect.remaining_turns == 0 {
-                events.push_back(GameEvent::EffectExpired {
+                step_context.add_event(GameEvent::EffectExpired {
                     entity_id: entity.id,
                     effect_id: effect.effect_id,
                 });
@@ -166,7 +160,7 @@ impl GameState {
 
             let Some(effect_def) = effects_catalog.get(effect.effect_id) else {
                 // Unknown effect, remove it
-                events.push_back(GameEvent::EffectExpired {
+                step_context.add_event(GameEvent::EffectExpired {
                     entity_id: entity.id,
                     effect_id: effect.effect_id,
                 });
@@ -177,14 +171,13 @@ impl GameState {
                     entity.stats.hp += hp_per_turn;
                 },
             }
-            events.push_back(GameEvent::EffectTick {
+            step_context.add_event(GameEvent::EffectTick {
                 entity_id: entity.id,
                 effect_id: effect.effect_id,
             });
 
             true
         });
-        events
     }
 
     /// Returns a reference to the player.
@@ -227,7 +220,7 @@ impl GameState {
 #[cfg(test)]
 mod tests {
 
-    use crate::{position::Position, ActorKind, Direction};
+    use crate::{ActorKind, Direction, position::Position};
 
     use super::*;
 
@@ -253,7 +246,8 @@ mod tests {
             DungeonMap::simple(10, 10),
             MyRng::new(),
         );
-        let result = gs.apply_player_action(&PlayerAction::Move(Direction::East));
+        let result =
+            gs.apply_player_action(&PlayerAction::Move(Direction::East));
         let events: Vec<_> = result.events.into_iter().collect();
         assert!(matches!(events[0], GameEvent::PlayerMoved { .. }));
         assert!(matches!(events[1], GameEvent::EntityMoved { .. }));
@@ -281,11 +275,22 @@ mod tests {
             let e2: Vec<_> = r2.events.into_iter().collect();
             assert_eq!(e1.len(), e2.len());
             for (a, b) in e1.iter().zip(e2.iter()) {
-                assert_eq!(std::mem::discriminant(a), std::mem::discriminant(b));
+                assert_eq!(
+                    std::mem::discriminant(a),
+                    std::mem::discriminant(b)
+                );
                 match (a, b) {
                     (
-                        GameEvent::EntityAttacked { target: t1, damage: d1, .. },
-                        GameEvent::EntityAttacked { target: t2, damage: d2, .. },
+                        GameEvent::EntityAttacked {
+                            target: t1,
+                            damage: d1,
+                            ..
+                        },
+                        GameEvent::EntityAttacked {
+                            target: t2,
+                            damage: d2,
+                            ..
+                        },
                     ) => {
                         assert_eq!(t1, t2);
                         assert_eq!(d1, d2);

@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::state::AppState;
 
 pub async fn game_state(
-    path: web::Path<(Uuid)>,
+    path: web::Path<Uuid>,
     data: web::Data<Arc<Mutex<AppState>>>,
 ) -> HttpResponse {
     let game_id = path.into_inner();
