@@ -44,9 +44,11 @@ mod tests {
     #[test]
     fn equipping_item_moves_it_from_inventory() {
         let mut gs = setup_state();
-        let events = player_equip_item(&mut gs, &mut StepContext::new(), 0, 0);
+        let mut step_context = StepContext::default();
+        player_equip_item(&mut gs, &mut step_context, 0, 0);
+        let result = step_context.build();
         assert!(matches!(
-            events.as_slice(),
+            result.events.as_slices().0,
             [GameEvent::PlayerEquippedItem { item_id: 0, slot: 0 }]
         ));
         assert!(gs.hotbar.contains(0));
@@ -61,12 +63,19 @@ mod tests {
     fn cannot_equip_if_slot_taken_or_item_missing() {
         let mut gs = setup_state();
         // First equip item 0 into slot 0
-        player_equip_item(&mut gs, 0, 0);
+        let mut step_context = StepContext::default();
+        player_equip_item(&mut gs, &mut step_context, 0, 0);
+
         // Try to equip another item into same slot
-        let events = player_equip_item(&mut gs, 1, 0);
-        assert!(events.is_empty());
+        let mut step_context2 = StepContext::default();
+        player_equip_item(&mut gs, &mut step_context2, 1, 0);
+        let result2 = step_context2.build();
+        assert!(result2.events.is_empty());
+
         // Try to equip non-existent item
-        let events = player_equip_item(&mut gs, 999, 1);
-        assert!(events.is_empty());
+        let mut step_context3 = StepContext::default();
+        player_equip_item(&mut gs, &mut step_context3, 999, 1);
+        let result3 = step_context3.build();
+        assert!(result3.events.is_empty());
     }
 }

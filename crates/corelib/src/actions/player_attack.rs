@@ -49,7 +49,7 @@ mod tests {
             DungeonMap::simple(10, 10),
             MyRng::from_seed([0; 32]),
         );
-        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));
         assert_eq!(gs.entities[1].stats.hp, 20);
@@ -73,11 +73,11 @@ mod tests {
             DungeonMap::simple(10, 10),
             MyRng::from_seed([0; 32]),
         );
-        player_attack(&mut gs, Direction::North);
-        player_attack(&mut gs, Direction::North);
-        player_attack(&mut gs, Direction::North);
-        player_attack(&mut gs, Direction::North);
-        player_attack(&mut gs, Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
+        player_attack(&mut gs, &mut StepContext::default(), Direction::North);
         assert_eq!(gs.entities[0].stats.hp, 20);
         assert_eq!(gs.entities[0].position, Position::new(1, 0));
         assert_eq!(gs.entities[1].stats.hp, 20);

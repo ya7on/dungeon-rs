@@ -41,10 +41,13 @@ mod tests {
     #[test]
     fn unequip_moves_item_back_to_inventory() {
         let mut gs = setup_state();
-        player_equip_item(&mut gs, 0, 0);
-        let events = player_unequip_item(&mut gs, 0);
+        let mut step_context1 = StepContext::default();
+        player_equip_item(&mut gs, &mut step_context1, 0, 0);
+        let mut step_context2 = StepContext::default();
+        player_unequip_item(&mut gs, &mut step_context2, 0);
+        let result = step_context2.build();
         assert!(matches!(
-            events.as_slice(),
+            result.events.as_slices().0,
             [GameEvent::PlayerUnequippedItem { slot: 0 }]
         ));
         assert!(!gs.hotbar.contains(0));
@@ -58,7 +61,9 @@ mod tests {
     #[test]
     fn cannot_unequip_empty_slot() {
         let mut gs = setup_state();
-        let events = player_unequip_item(&mut gs, 0);
-        assert!(events.is_empty());
+        let mut step_context = StepContext::default();
+        player_unequip_item(&mut gs, &mut step_context, 0);
+        let result = step_context.build();
+        assert!(result.events.is_empty());
     }
 }
