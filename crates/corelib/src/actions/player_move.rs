@@ -22,7 +22,7 @@ pub(crate) fn player_move(
             position: state.player.position,
             direction,
         });
-    };
+    }
 }
 
 #[cfg(test)]

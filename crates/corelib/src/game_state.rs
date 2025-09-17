@@ -279,8 +279,7 @@ mod tests {
                     std::mem::discriminant(a),
                     std::mem::discriminant(b)
                 );
-                match (a, b) {
-                    (
+                if let (
                         GameEvent::EntityAttacked {
                             target: t1,
                             damage: d1,
@@ -291,11 +290,9 @@ mod tests {
                             damage: d2,
                             ..
                         },
-                    ) => {
-                        assert_eq!(t1, t2);
-                        assert_eq!(d1, d2);
-                    },
-                    _ => {},
+                    ) = (a, b) {
+                    assert_eq!(t1, t2);
+                    assert_eq!(d1, d2);
                 }
             }
             assert_eq!(gs1.player.stats.hp, gs2.player.stats.hp);

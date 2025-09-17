@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use corelib::GameState;
 use protocol::{PlayerAction, State, StepResult};
 
-/// Local implementation of GameState.
+/// Local implementation of `GameState`.
 pub type LocalState = GameState;
 
 use crate::{

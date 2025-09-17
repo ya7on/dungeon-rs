@@ -55,7 +55,7 @@ mod tests {
         assert!(
             gs.inventory
                 .iter()
-                .all(|slot| slot.as_ref().map_or(true, |s| s.id() != 0))
+                .all(|slot| slot.as_ref().is_none_or(|s| s.id() != 0))
         );
     }
 
