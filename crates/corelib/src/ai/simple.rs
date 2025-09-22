@@ -39,16 +39,15 @@ pub(crate) fn simple_ai(
             (relative.y < 0, Direction::South),
         ] {
             let (condition, direction) = direction;
-            if condition {
-                if let Some((from, to)) = try_move(entity, direction, walk_map)
-                {
-                    step_context.add_event(GameEvent::EntityMoved {
-                        id: entity.id(),
-                        from,
-                        to,
-                    });
-                    break;
-                }
+            if condition
+                && let Some((from, to)) = try_move(entity, direction, walk_map)
+            {
+                step_context.add_event(GameEvent::EntityMoved {
+                    id: entity.id(),
+                    from,
+                    to,
+                });
+                break;
             }
         }
     }

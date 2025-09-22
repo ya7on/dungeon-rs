@@ -564,6 +564,7 @@ dependencies = [
  "lru 0.16.0",
  "protocol",
  "serde",
+ "tokio",
  "uuid",
 ]
 

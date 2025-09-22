@@ -31,10 +31,10 @@ impl Inventory {
 
     pub(crate) fn take(&mut self, item_id: ItemId) -> Option<ItemStack> {
         for item in &mut self.slots {
-            if let Some(stack) = item {
-                if stack.item_id == item_id {
-                    return item.take();
-                }
+            if let Some(stack) = item
+                && stack.item_id == item_id
+            {
+                return item.take();
             }
         }
         None

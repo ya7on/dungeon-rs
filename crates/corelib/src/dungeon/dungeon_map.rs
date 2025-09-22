@@ -47,6 +47,7 @@ impl DungeonMap {
     /// Generates a simple dungeon map with floor tiles.
     ///
     /// TODO: Remove this function
+    #[allow(dead_code)]
     pub(crate) fn simple(width: usize, height: usize) -> Self {
         let mut tiles = Array2D::empty(width, height);
         // TODO: Implement proper dungeon generation algorithm.

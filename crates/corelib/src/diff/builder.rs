@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{EntityId, Position, Stats};
 
 use super::{
-    diff::StateDiff,
+    state::StateDiff,
     utils::{EntityDiff, SingleDiff},
 };
 
@@ -18,6 +18,7 @@ pub struct DiffBuilder {
 
 impl DiffBuilder {
     /// Adds a position diff to the builder.
+    #[allow(dead_code)]
     pub(crate) fn position(
         &mut self,
         entity_id: EntityId,
@@ -27,6 +28,7 @@ impl DiffBuilder {
         self.positions.push(EntityDiff { entity_id, old, new });
     }
 
+    #[allow(dead_code)]
     pub(crate) fn stat(&mut self, entity_id: EntityId, old: Stats, new: Stats) {
         self.stats.entry(entity_id).or_insert(SingleDiff { old, new });
     }

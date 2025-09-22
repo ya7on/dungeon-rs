@@ -58,7 +58,10 @@ impl Transport for LocalTransport {
 
     /// Get the current game state.
     fn state(&self) -> State {
-        let guard = self.state.lock().unwrap();
+        let Ok(guard) = self.state.lock() else {
+            // Mutex was poisoned, which indicates a panic in another thread
+            panic!("Failed to acquire lock on game state: mutex was poisoned")
+        };
         State {
             player: protocol::Position::from_corelib(guard.player().position()),
         }

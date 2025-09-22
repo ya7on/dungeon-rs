@@ -7,6 +7,7 @@ pub struct ItemDef {
     pub(crate) title: String,
     pub(crate) description: String,
     pub(crate) kind: ItemKind,
+    #[allow(dead_code)]
     pub(crate) stackable: bool,
 }
 

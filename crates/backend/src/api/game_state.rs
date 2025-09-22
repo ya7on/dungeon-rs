@@ -11,8 +11,11 @@ pub async fn game_state(
 ) -> HttpResponse {
     let game_id = path.into_inner();
 
-    let mut guard = data.lock().unwrap();
-    let engine = guard.get_game(game_id).unwrap();
+    let engine = {
+        let guard = data.lock().unwrap();
+        guard.get_game(game_id).unwrap()
+    };
 
-    HttpResponse::Ok().json(engine.state())
+    let engine_guard = engine.lock().await;
+    HttpResponse::Ok().json(engine_guard.state())
 }

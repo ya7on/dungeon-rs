@@ -26,6 +26,7 @@ impl From<EntityId> for u32 {
 
 impl EntityId {
     /// Returns the inner value of the entity ID.
+    #[must_use]
     pub fn into_inner(self) -> u32 {
         self.0
     }
@@ -87,6 +88,7 @@ impl Actor {
     }
 
     /// Returns the effects currently affecting the actor.
+    #[allow(dead_code)]
     #[must_use]
     pub(crate) fn effects(&self) -> &Vec<EffectInstance> {
         &self.effects

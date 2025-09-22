@@ -1,7 +1,7 @@
 mod builder;
-mod diff;
+mod state;
 mod utils;
 
 pub(crate) use builder::DiffBuilder;
-pub use diff::StateDiff;
+pub use state::StateDiff;
 pub use utils::EntityDiff;

@@ -5,6 +5,7 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Widget},
 };
 
+#[allow(dead_code)]
 pub struct StatsWidget {
     hp: u32,
     min_damage: u32,

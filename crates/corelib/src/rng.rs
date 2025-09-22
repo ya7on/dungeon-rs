@@ -13,6 +13,7 @@ pub(crate) struct MyRng {
 
 impl MyRng {
     /// Create a new random number generator.
+    #[allow(dead_code)]
     pub fn new() -> Self {
         MyRng { rng: ChaCha8Rng::from_os_rng(), tick_id: 0 }
     }
@@ -27,6 +28,7 @@ impl MyRng {
     ///
     /// # Warning!
     /// O(n)
+    #[allow(dead_code)]
     #[must_use]
     pub(crate) fn load(seed: [u8; 32], tick_id: usize) -> Self {
         let mut rng = ChaCha8Rng::from_seed(seed);

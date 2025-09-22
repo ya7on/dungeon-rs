@@ -13,10 +13,13 @@ pub async fn apply_move(
 ) -> HttpResponse {
     let game_id = path.into_inner();
 
-    let mut guard = data.lock().unwrap();
-    let engine = guard.get_game(game_id).unwrap();
+    let engine = {
+        let guard = data.lock().unwrap();
+        guard.get_game(game_id).unwrap()
+    };
 
-    let result = engine.apply_step(json.into_inner()).await.unwrap();
+    let mut engine_guard = engine.lock().await;
+    let result = engine_guard.apply_step(json.into_inner()).await.unwrap();
 
     HttpResponse::Ok().json(result)
 }

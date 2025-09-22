@@ -4,6 +4,7 @@ use super::ItemId;
 #[derive(Debug)]
 pub struct ItemStack {
     pub(crate) item_id: ItemId,
+    #[allow(dead_code)]
     pub(crate) count: u32,
 }
 
