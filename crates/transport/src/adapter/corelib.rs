@@ -96,3 +96,34 @@ impl FromCorelib<corelib::Direction> for protocol::Direction {
         }
     }
 }
+
+impl FromCorelib<corelib::EntityId> for protocol::EntityId {
+    fn from_corelib(from: corelib::EntityId) -> Self {
+        Self(from.into_inner())
+    }
+}
+
+impl<T, P> FromCorelib<corelib::EntityDiff<P>> for protocol::EntityDiff<T>
+where
+    T: FromCorelib<P>,
+{
+    fn from_corelib(from: corelib::EntityDiff<P>) -> Self {
+        Self {
+            entity_id: protocol::EntityId::from_corelib(from.entity_id),
+            new: T::from_corelib(from.new),
+            old: T::from_corelib(from.old),
+        }
+    }
+}
+
+impl FromCorelib<corelib::StateDiff> for protocol::StateDiff {
+    fn from_corelib(from: corelib::StateDiff) -> Self {
+        Self {
+            positions: from
+                .positions
+                .into_iter()
+                .map(protocol::EntityDiff::from_corelib)
+                .collect(),
+        }
+    }
+}

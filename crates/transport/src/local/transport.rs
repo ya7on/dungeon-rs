@@ -52,6 +52,7 @@ impl Transport for LocalTransport {
                 .into_iter()
                 .map(protocol::GameEvent::from_corelib)
                 .collect(),
+            diff: protocol::StateDiff::from_corelib(result.diff),
         })
     }
 

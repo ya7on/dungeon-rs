@@ -11,14 +11,18 @@
 //! It defines the data structures and messages used to communicate between the frontend and backend.
 
 mod actions;
+mod diff;
 mod directions;
+mod entity_id;
 mod event;
 mod position;
 mod state;
 mod step;
 
 pub use actions::PlayerAction;
+pub use diff::{EntityDiff, StateDiff};
 pub use directions::Direction;
+pub use entity_id::EntityId;
 pub use event::GameEvent;
 pub use position::Position;
 pub use state::State;

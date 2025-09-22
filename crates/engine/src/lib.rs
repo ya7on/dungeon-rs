@@ -40,6 +40,10 @@ impl Engine<LocalTransport> {
 
 impl<T: Transport> Engine<T> {
     /// Applies a player action to the game state.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the transport fails to apply the step.
     pub async fn apply_step(
         &mut self,
         action: PlayerAction,

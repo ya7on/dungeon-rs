@@ -16,7 +16,7 @@ pub async fn apply_move(
     let mut guard = data.lock().unwrap();
     let engine = guard.get_game(game_id).unwrap();
 
-    let _ = engine.apply_step(json.into_inner()).await;
+    let result = engine.apply_step(json.into_inner()).await.unwrap();
 
-    HttpResponse::Ok().body("Hello World!")
+    HttpResponse::Ok().json(result)
 }

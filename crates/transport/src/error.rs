@@ -2,6 +2,7 @@
 pub type TransportResult<T> = Result<T, TransportError>;
 
 /// Enum representing common errors that can occur during transport operations.
+#[derive(Debug)]
 pub enum TransportError {
     /// Error occurred while trying to lock the state.
     LockError,

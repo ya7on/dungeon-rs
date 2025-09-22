@@ -1,6 +1,9 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{Direction, Position};
 
 /// Represents an event that occurs in the game.
+#[derive(Serialize, Deserialize)]
 pub enum GameEvent {
     /* --- Player events --- */
     /// Player skipped move event

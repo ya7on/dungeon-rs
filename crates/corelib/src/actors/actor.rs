@@ -25,6 +25,11 @@ impl From<EntityId> for u32 {
 }
 
 impl EntityId {
+    /// Returns the inner value of the entity ID.
+    pub fn into_inner(self) -> u32 {
+        self.0
+    }
+
     /// Creates a new unique entity ID.
     pub fn next_entity_id() -> Self {
         EntityId(ENTITY_ID_COUNTER.fetch_add(1, Ordering::Relaxed))
